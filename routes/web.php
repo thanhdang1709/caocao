@@ -34,13 +34,16 @@ Route::get('/tracking', function () {
 
 
 Route::group([
-    
+    // 'middleware' => 'auth',
     'prefix' => 'earn'
 
 ], function ($router) {
     Route::get('/list', [EarnController::class, 'list']);
     Route::post('/approve_task', [EarnController::class, 'approve_task']);
     Route::post('/reject_task', [EarnController::class, 'reject_task']);
+
+    Route::post('/approve_user', [EarnController::class, 'approve_user']);
+    Route::post('/reject_user', [EarnController::class, 'reject_user']);
     
 });
 

@@ -48,7 +48,9 @@
                             <tr>
                                 <td>{{$earn->id}}</td>
                                 <td>{{$earn->user_id}}</td>
-                                <td>{{$earn->user->email}}</td>
+                                <td>{{$earn->user->email}}
+                                    <button  user_id="{{$earn->user_id}}" class="btn btn-success mr-2 confirm-user">Approve user</button> <button  user_id="{{$earn->user_id}}"  class="btn btn-danger mr-2 reject-user">Reject user</button> 
+                                </td>
                                 <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{$earn->user->address}}" target="_blank" > {{$earn->user->address}}</a></td>
                                 <td class="text-red text-bold">{{number_format($earn->reward)}}</td>
                                 <td>{{$earn->status}}</td>
@@ -62,7 +64,10 @@
                         </tbody>
                     </table>
                     <div class="d-flex justify-content-center mt-2">
-                        {{$earns->appends(['sort' => 'reward', 'status' => "1", 'today'=> 1])->links('pagination::bootstrap-4')}}
+                        @php
+                         $query = isset($_GET) ? $_GET : [];
+                        @endphp
+                        {{$earns->appends($query)->links('pagination::bootstrap-4')}}
                       </div>
                 </div>
             </div>
@@ -138,6 +143,83 @@
                     type:"POST",
                     data:{
                     earn_id: earn_id,
+                    },
+                    success:function(response){
+                        if(response.type == "RESPONSE_OK") {
+                            location.reload();
+                        }
+                    },
+                    error: function(error) {
+                    console.log(error);
+                    Swal.fire('Changes are not saved', error, 'info')
+                    }
+                });
+
+                
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+            });
+        }); 
+
+
+
+        $(".confirm-user").click(function(event){
+            var self = this;
+            let user_id = $(this).attr('user_id');
+            event.preventDefault();
+            Swal.fire({
+            title: 'Do you want to approve the task?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: `Don't`,
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/earn/approve_user",
+                    type:"POST",
+                    data:{
+                        user_id: user_id,
+                    },
+                    success:function(response){
+                        if(response.type == "RESPONSE_OK") {
+                            location.reload();
+                        }
+                    },
+                    error: function(error) {
+                    console.log(error);
+                    Swal.fire('Changes are not saved', error, 'info')
+                    }
+                });
+
+                
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+            });
+        }); 
+
+
+        $(".reject-user").click(function(event){
+            var self = this;
+            let user_id = $(this).attr('user_id');
+            event.preventDefault();
+            Swal.fire({
+            title: 'Do you want to reject the task?',
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'YES',
+            denyButtonText: `NO`,
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/earn/reject_user",
+                    type:"POST",
+                    data:{
+                    user_id: user_id,
                     },
                     success:function(response){
                         if(response.type == "RESPONSE_OK") {

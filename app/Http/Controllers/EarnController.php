@@ -63,23 +63,37 @@ class EarnController extends Controller
 
         //Add sorting
 
-        $queryEarn->with('user')->orderBy('id','desc');
+        $queryEarn->with('user');
 
         //Add Conditions
 
         // if(!is_null($filters['user_id'])) {
         //     $queryEarn->where('user_id','=',$filters['user_id']);
         // }
-        
+        $sort = $request->sort ?? 'id';
+
+        if($sort && $sort == 'id') {
+            $queryEarn->orderBy('id','desc');
+        }
+        if($sort && $sort == 'reward') {
+            $queryEarn->orderBy('reward','desc');
+        }
+
         if($status) {
             $queryEarn->whereIn('status', $status);
         }
+
+
         if($request->today) {
             $queryEarn->whereDate( 'created_at', '=', now()->subDays(1));
         }
 
         if($from_date && $to_date) {
-            $queryEarn->where('status','=', $status);
+            $queryEarn->whereDateBetween('created_at', $to_date, $from_date);
+        }
+
+        if($request->user_id) {
+            $queryEarn->where('user_id','=', $request->user_id);
         }
 
         // if(!is_null($filters['state_id'])) {
@@ -110,8 +124,23 @@ class EarnController extends Controller
 
         if($earn->reward > 0)
         {
+            $user = User::where('id', $earn->user_id)->first();
+            $log_id = \DB::table('balance_logs')->insertGetId([
+                'user_id' => $earn->user_id,
+                'start_balance' => $user->balance,
+                'start_pending_balance' => $user->pending_balance,
+                'amount' => (double)$earn->reward,
+                'description' => 'Admin approve reward task',
+            ]);
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
-            User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);   
+            User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);
+
+            $user = User::where('id', $earn->user_id)->first();
+            $log  = \DB::table('balance_logs')->whereId($log_id)->update([
+                'to_balance' => $user->balance,
+                'to_pending_balance' => $user->pending_balance,
+                'description' => 'Admin approve reward task',
+            ]);
         }
             
         return $this->responseOK(['message' => 'OK']);
@@ -125,12 +154,113 @@ class EarnController extends Controller
 
         if($earn && $earn->reward > 0)
         {
+
+            $user = User::where('id', $earn->user_id)->first();
+            $log_id = \DB::table('balance_logs')->insertGetId([
+                'user_id' => $earn->user_id,
+                'start_balance' => $user->balance,
+                'start_pending_balance' => $user->pending_balance,
+                'amount' => (double)$earn->reward,
+                'description' => 'Admin approve reward task',
+            ]);
+
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
-            // User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);   
+            
+            $user = User::where('id', $earn->user_id)->first();
+            $log  = \DB::table('balance_logs')->whereId($log_id)->update([
+                'to_balance' => $user->balance,
+                'to_pending_balance' => $user->pending_balance,
+                'description' => 'Admin approve reward task',
+            ]);
             return $this->responseOK('OK');
         }
 
         return $this->responseError('ERROR');
+            
+       
+    }
+
+
+
+    public function approve_user(Request $request)
+    {
+        $user_id = $request->user_id;
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',   date('2022-06-03'))->where('status', 1)->get();
+        $list_id = [];
+        if($earns) {
+            foreach($earns as $earn) {
+                Earn::where('id', $earn->id)->update(['status' => 3, 'description' => 'Reject: You did not hold the token while the system was checking']);
+                array_push($list_id, $earn->id);
+            }
+            
+        }
+
+        if(count($list_id) > 0)
+        {   
+            foreach($list_id as $earn_id) {
+                $earn = Earn::where('id', $earn_id)->first();
+
+                $user = User::where('id', $user_id)->first();
+                $log_id = \DB::table('balance_logs')->insertGetId([
+                    'user_id' => $user_id,
+                    'start_balance' => $user->balance,
+                    'start_pending_balance' => $user->pending_balance,
+                    'amount' => (double)$earn->reward,
+                    'description' => 'Admin approve reward task',
+                ]);
+                User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
+                User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);
+
+                $user = User::where('id', $earn->user_id)->first();
+                $log  = \DB::table('balance_logs')->whereId($log_id)->update([
+                    'to_balance' => $user->balance,
+                    'to_pending_balance' => $user->pending_balance,
+                    'description' => 'Admin approve reward task',
+                ]);
+            }
+        }
+            
+        return $this->responseOK(['message' => 'OK']);
+    }
+
+    public function reject_user(Request $request)
+    {
+       $user_id = $request->user_id;
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
+        $list_id = [];
+        if($earns) {
+            foreach($earns as $earn) {
+                Earn::where('id', $earn->id)->update(['status' => 3, 'description' => 'Reject: You did not hold the token while the system was checking']);
+                array_push($list_id, $earn->id);
+            }
+            
+        }
+
+        if(count($list_id) > 0)
+        {   
+            foreach($list_id as $earn_id) {
+                $earn = Earn::where('id', $earn_id)->first();
+                
+                $user = User::where('id', $user_id)->first();
+                $log_id = \DB::table('balance_logs')->insertGetId([
+                    'user_id' => $user_id,
+                    'start_balance' => $user->balance,
+                    'start_pending_balance' => $user->pending_balance,
+                    'amount' => (double)$earn->reward,
+                    'description' => 'Admin approve reward task',
+                ]);
+                User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
+
+                $user = User::where('id', $earn->user_id)->first();
+                $log  = \DB::table('balance_logs')->whereId($log_id)->update([
+                    'to_balance' => $user->balance,
+                    'to_pending_balance' => $user->pending_balance,
+                    'description' => 'Admin approve reward task',
+                ]);
+            }
+        }
+            
+        return $this->responseOK(['message' => 'OK']);
             
        
     }
