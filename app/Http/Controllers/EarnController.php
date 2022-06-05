@@ -184,11 +184,11 @@ class EarnController extends Controller
     public function approve_user(Request $request)
     {
         $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  Carbon::today())->where('status', 1)->get();
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
-                Earn::where('id', $earn->id)->whereDate('created_at',  date('2022-06-04'))->update(['status' => 2]);
+                Earn::where('id', $earn->id)->update(['status' => 2]);
                 array_push($list_id, $earn->id);
             }
             
@@ -225,7 +225,7 @@ class EarnController extends Controller
     public function reject_user(Request $request)
     {
        $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-04'))->where('status', 1)->get();
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
