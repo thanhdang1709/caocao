@@ -229,7 +229,7 @@ class EarnController extends Controller
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
-                Earn::where('id', $earn->id)->update(['status' => 3, 'reward' => 0, 'description' => 'Reject: You did not hold the token while the system was checking']);
+                Earn::where('id', $earn->id)->update(['status' => 3, 'description' => 'Reject: You did not hold the token while the system was checking']);
                 array_push($list_id, $earn->id);
             }
             
@@ -254,6 +254,10 @@ class EarnController extends Controller
                     'to_pending_balance' => $user->pending_balance,
                 ]);
             }
+        }
+
+        foreach($earns as $earn) {
+            Earn::where('id', $earn->id)->update(['reward' => 0]);
         }
             
         return $this->responseOK(['message' => 'OK']);
