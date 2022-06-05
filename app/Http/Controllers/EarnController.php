@@ -184,7 +184,7 @@ class EarnController extends Controller
     public function approve_user(Request $request)
     {
         $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-04'))->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
@@ -225,7 +225,7 @@ class EarnController extends Controller
     public function reject_user(Request $request)
     {
        $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-04'))->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
@@ -239,7 +239,6 @@ class EarnController extends Controller
         {   
             foreach($list_id as $earn_id) {
                 $earn = Earn::where('id', $earn_id)->first();
-                
                 $user = User::where('id', $user_id)->first();
                 $log_id = \DB::table('balance_logs')->insertGetId([
                     'user_id' => $user_id,
