@@ -119,7 +119,7 @@ class EarnController extends Controller
     public function approve_task(Request $request)
     {
         $earn_id = $request->earn_id;
-        $earn = Earn::where('id', $earn_id)->update(['status' => 2]);
+        $earn = Earn::where('id', $earn_id)->where('status', 1)->update(['status' => 2]);
         $earn = Earn::where('id', $earn_id)->first();
 
         if($earn->reward > 0)
@@ -149,7 +149,7 @@ class EarnController extends Controller
     public function reject_task(Request $request)
     {
         $earn_id = $request->earn_id;
-        $earn = Earn::where('id', $earn_id)->update(['status' => 3, 'reward' => 0, 'description' => 'Reject: You did not hold the token while the system was checking']);
+        $earn = Earn::where('id', $earn_id)->where('status', 1)->update(['status' => 3, 'reward' => 0, 'description' => 'Reject: You did not hold the token while the system was checking']);
         $earn = Earn::where('id', $earn_id)->first();
 
         if($earn)
@@ -184,7 +184,7 @@ class EarnController extends Controller
     public function approve_user(Request $request)
     {
         $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date(env('DATE_APPROVE')))->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
@@ -225,7 +225,7 @@ class EarnController extends Controller
     public function reject_user(Request $request)
     {
        $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date('2022-06-03'))->where('status', 1)->get();
+        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date(env('DATE_APPROVE')))->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
