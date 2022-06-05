@@ -34,7 +34,7 @@ Route::get('/tracking', function () {
 
 
 Route::group([
-    'middleware' => 'auth',
+    // 'middleware' => 'auth',
     'prefix' => 'earn'
 
 ], function ($router) {
