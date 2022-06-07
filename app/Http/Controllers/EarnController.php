@@ -130,7 +130,7 @@ class EarnController extends Controller
                 'start_balance' => $user->balance,
                 'start_pending_balance' => $user->pending_balance,
                 'amount' => (double)$earn->reward,
-                'description' => 'Admin approve reward task',
+                'description' => 'Admin approve reward task '.$earn->id,
             ]);
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
             User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);
@@ -139,7 +139,6 @@ class EarnController extends Controller
             $log  = \DB::table('balance_logs')->whereId($log_id)->update([
                 'to_balance' => $user->balance,
                 'to_pending_balance' => $user->pending_balance,
-                'description' => 'Admin approve reward task',
             ]);
         }
             
@@ -161,7 +160,7 @@ class EarnController extends Controller
                 'start_balance' => $user->balance,
                 'start_pending_balance' => $user->pending_balance,
                 'amount' => (double)$earn->reward,
-                'description' => 'Admin reject reward task',
+                'description' => 'Admin reject reward task  '.$earn->id,
             ]);
 
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
@@ -205,7 +204,7 @@ class EarnController extends Controller
                     'start_balance' => $user->balance,
                     'start_pending_balance' => $user->pending_balance,
                     'amount' => (double)$earn->reward,
-                    'description' => 'Admin approve reward task',
+                    'description' => 'Admin approve reward task  '.$earn->id,
                 ]);
                 User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
                 User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);
@@ -214,7 +213,6 @@ class EarnController extends Controller
                 $log  = \DB::table('balance_logs')->whereId($log_id)->update([
                     'to_balance' => $user->balance,
                     'to_pending_balance' => $user->pending_balance,
-                    'description' => 'Admin approve reward task',
                 ]);
             }
         }
@@ -245,7 +243,7 @@ class EarnController extends Controller
                     'start_balance' => $user->balance,
                     'start_pending_balance' => $user->pending_balance,
                     'amount' => (double)$earn->reward,
-                    'description' => 'Admin reject reward task',
+                    'description' => 'Admin reject reward task  '.$earn->id,
                 ]);
                 User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
                 $user = User::where('id', $earn->user_id)->first();

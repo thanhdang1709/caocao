@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EarnController;
+use App\Http\Controllers\WithdrawlController;
 use App\Models\User;
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,18 @@ Route::group([
 
     Route::post('/approve_user', [EarnController::class, 'approve_user']);
     Route::post('/reject_user', [EarnController::class, 'reject_user']);
+    
+});
+
+
+Route::group([
+    // 'middleware' => 'auth',
+    'prefix' => 'withdraw'
+
+], function ($router) {
+    Route::get('/list', [WithdrawlController::class, 'list']);
+    Route::post('/approve_request', [WithdrawlController::class, 'approve_request']);
+    Route::post('/reject_request', [WithdrawlController::class, 'reject_request']);
     
 });
 

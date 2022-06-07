@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'api/*',
         'earn/*',
+        'withdraw/*',
         '*.azworld.network' => [
         'prefix/*'
         ],
