@@ -175,6 +175,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Spatie\Backup\BackupServiceProvider::class,
+        App\Providers\GoogleDriveServiceProvider::class,
 
     ],
 

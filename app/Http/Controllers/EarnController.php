@@ -125,6 +125,13 @@ class EarnController extends Controller
         if($earn->reward > 0)
         {
             $user = User::where('id', $earn->user_id)->first();
+
+            $user = User::where('id', $user_id)->first();
+
+            if($user->is_ban) {
+                return;
+            }
+            
             $log_id = \DB::table('balance_logs')->insertGetId([
                 'user_id' => $earn->user_id,
                 'start_balance' => $user->balance,
@@ -184,7 +191,14 @@ class EarnController extends Controller
     {
         $user_id = $request->user_id;
         $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date(env('DATE_APPROVE')))->where('status', 1)->get();
+        $user = User::where('id', $user_id)->first();
+
+        if($user->is_ban) {
+            return;
+        }
+
         $list_id = [];
+        
         if($earns) {
             foreach($earns as $earn) {
                 Earn::where('id', $earn->id)->update(['status' => 2]);
@@ -197,8 +211,6 @@ class EarnController extends Controller
         {   
             foreach($list_id as $earn_id) {
                 $earn = Earn::where('id', $earn_id)->first();
-
-                $user = User::where('id', $user_id)->first();
                 $log_id = \DB::table('balance_logs')->insertGetId([
                     'user_id' => $user_id,
                     'start_balance' => $user->balance,
