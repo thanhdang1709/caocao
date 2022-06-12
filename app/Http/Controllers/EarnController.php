@@ -120,7 +120,6 @@ class EarnController extends Controller
     {
         $earn_id = $request->earn_id;
         $earn = Earn::where('id', $earn_id)->where('status', 1)->update(['status' => 2]);
-        $earn = Earn::where('id', $earn_id)->first();
 
         if($earn->reward > 0)
         {
@@ -131,7 +130,7 @@ class EarnController extends Controller
             if($user->is_ban) {
                 return;
             }
-            
+
             $log_id = \DB::table('balance_logs')->insertGetId([
                 'user_id' => $earn->user_id,
                 'start_balance' => $user->balance,
