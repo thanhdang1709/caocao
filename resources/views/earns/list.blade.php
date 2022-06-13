@@ -54,6 +54,7 @@
                                 </td>
                                 @endif
                                 <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{$earn->user->address}}" target="_blank" > {{$earn->user->address}}</a></td>
+                                @endif
                                 <td class="text-red text-bold">{{number_format($earn->reward)}}</td>
                                 <td>{{$earn->status}}</td>
                                 <td>{{$earn->subject}}</td>
