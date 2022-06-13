@@ -48,7 +48,7 @@
                             <tr>
                                 <td>{{$earn->id}}</td>
                                 <td>{{$earn->user_id}}</td>
-                                <td>{{$earn->user->email}}
+                                <td>{{@if($earn->user) $earn->user->email @endif}}
                                     <button  user_id="{{$earn->user_id}}" class="btn btn-success mr-2 confirm-user">Approve user</button> <button  user_id="{{$earn->user_id}}"  class="btn btn-danger mr-2 reject-user">Reject user</button> 
                                 </td>
                                 <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{$earn->user->address}}" target="_blank" > {{$earn->user->address}}</a></td>
