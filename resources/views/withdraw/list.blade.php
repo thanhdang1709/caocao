@@ -31,6 +31,9 @@
                                 <th style="width: 10px">#</th>
                                 <th>User Id</th>
                                 <th>Email</th>
+                                <th>Balance</th>
+                                <th>Pending</th>
+                                <th>Frozen</th>
                                 <th>Address</th>
                                 <th>Amount</th>
                                 <th>Status</th>
@@ -46,6 +49,9 @@
                                 <td>{{$earn->id}}</td>
                                 <td>{{$earn->user_id}}</td>
                                 <td>{{$earn->user->email}}
+                                <td>{{$earn->user->balance}}
+                                <td>{{$earn->user->pending_balance}}
+                                <td>{{$earn->user->frozen}}
                                   
                                 </td>
                                 <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{$earn->user->address}}" target="_blank" > {{$earn->user->address}}</a></td>

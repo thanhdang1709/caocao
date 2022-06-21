@@ -24,7 +24,7 @@ class GoogleDriveServiceProvider extends ServiceProvider
     public function boot()
     {
         \Storage::extend('google', function ($app, $config) {
-            $client = new \Google_Client();
+            $client = new \composer require nao-pon/flysystem-google-drive:~1.1oogle_Client();
             $client->setClientId($config['clientId']);
             $client->setClientSecret($config['clientSecret']);
             $client->refreshToken($config['refreshToken']);
