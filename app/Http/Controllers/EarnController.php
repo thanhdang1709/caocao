@@ -110,7 +110,7 @@ class EarnController extends Controller
 
         //Fetch list of results
 
-        $earns = $queryEarn->WhereIn('subject', $subjects)->paginate(10);
+        $earns = $queryEarn->WhereIn('subject', $subjects)->paginate(20);
         
 
         return view('earns.list', compact('earns'));
