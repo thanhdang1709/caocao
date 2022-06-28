@@ -50,16 +50,17 @@ class WithdrawlController extends Controller
         // if(!is_null($filters['user_id'])) {
         //     $queryEarn->where('user_id','=',$filters['user_id']);
         // }
+        $order_by = $request->order_by ?? 'desc';
         $sort = $request->sort ?? 'id';
 
         if($sort && $sort == 'id') {
-            $queryEarn->orderBy('id','desc');
+            $queryEarn->orderBy('id',$order_by);
         }
         if($sort && $sort == 'amount') {
-            $queryEarn->orderBy('amount','desc');
+            $queryEarn->orderBy('amount',$order_by);
         }
         if($sort && $sort == 'date') {
-            $queryEarn->orderBy('created_at','desc');
+            $queryEarn->orderBy('created_at',$order_by);
         }
 
         if($status) {
