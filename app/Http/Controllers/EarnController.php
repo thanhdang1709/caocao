@@ -7,6 +7,8 @@ use App\Models\Task;
 use App\Models\Earn;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use App\Jobs\SendFcm;
+use App\Models\Notification;
 
 class EarnController extends Controller
 {   
@@ -119,13 +121,10 @@ class EarnController extends Controller
     public function approve_task(Request $request)
     {
         $earn_id = $request->earn_id;
-        $earn = Earn::where('id', $earn_id)->where('status', 1)->update(['status' => 2]);
-
-        if($earn->reward > 0)
+        $earn = Earn::where('id', $earn_id)->where('status', 1)->first();
+        if($earn && $earn->reward > 0)
         {
             $user = User::where('id', $earn->user_id)->first();
-
-            $user = User::where('id', $user_id)->first();
 
             if($user->is_ban) {
                 return;
@@ -146,7 +145,21 @@ class EarnController extends Controller
                 'to_balance' => $user->balance,
                 'to_pending_balance' => $user->pending_balance,
             ]);
+            Earn::where('id', $earn_id)->where('status', 1)->update(['status' => 2]);
+
+            $title = "AZ WORLD";
+            $notification = "Admin approved reward task, please check history!";
+            $noti = new Notification();
+            $noti->user_id = $user->id;
+            $noti->subject = 'reward';
+            $noti->title = $title;
+            $noti->content = $notification;
+            $noti->read = 0;
+            $noti->save();
+            \Queue::push(new SendFcm($user,$title,$notification));
         }
+        
+       
             
         return $this->responseOK(['message' => 'OK']);
     }
@@ -176,6 +189,17 @@ class EarnController extends Controller
                 'to_balance' => $user->balance,
                 'to_pending_balance' => $user->pending_balance,
             ]);
+            $title = "AZ WORLD";
+            $notification = "Admin rejected task. Reason: You did not hold the token while the system was checking, please check history!";
+            $noti = new Notification();
+            $noti->user_id = $user->id;
+            $noti->subject = 'reward';
+            $noti->title = $title;
+            $noti->content = $notification;
+            $noti->read = 0;
+            $noti->save();
+            \Queue::push(new SendFcm($user,$title,$notification));
+
             return $this->responseOK('OK');
         }
 
@@ -226,6 +250,17 @@ class EarnController extends Controller
                     'to_pending_balance' => $user->pending_balance,
                 ]);
             }
+            
+            $title = "AZ WORLD";
+            $notification = "Admin approved reward task, please check history!";
+            $noti = new Notification();
+            $noti->user_id = $user->id;
+            $noti->subject = 'reward';
+            $noti->title = $title;
+            $noti->content = $notification;
+            $noti->read = 0;
+            $noti->save();
+            \Queue::push(new SendFcm($user,$title,$notification));
         }
             
         return $this->responseOK(['message' => 'OK']);
@@ -263,6 +298,17 @@ class EarnController extends Controller
                     'to_pending_balance' => $user->pending_balance,
                 ]);
             }
+
+            $title = "AZ WORLD";
+            $notification = "Admin rejected task. Reason: You did not hold the token while the system was checking, please check history!";
+            $noti = new Notification();
+            $noti->user_id = $user->id;
+            $noti->subject = 'reward';
+            $noti->title = $title;
+            $noti->content = $notification;
+            $noti->read = 0;
+            $noti->save();
+            \Queue::push(new SendFcm($user,$title,$notification));
         }
 
         foreach($earns as $earn) {

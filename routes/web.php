@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EarnController;
 use App\Http\Controllers\WithdrawlController;
+use App\Http\Controllers\TicketController;
 use App\Models\User;
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,17 @@ Route::group([
     Route::post('/approve_request', [WithdrawlController::class, 'approve_request']);
     Route::post('/reject_request', [WithdrawlController::class, 'reject_request']);
     
+});
+
+
+Route::group([
+    // 'middleware' => 'auth',
+    'prefix' => 'ticket'
+
+], function ($router) {
+    Route::get('/list', [TicketController::class, 'list']);
+    Route::get('/add', [TicketController::class, 'add']);
+    Route::post('/sent', [TicketController::class, 'sent']);
 });
 
 

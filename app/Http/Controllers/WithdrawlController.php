@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\Earn;
 use App\Models\User;
 use App\Models\Withdraw;
+use App\Jobs\SendFcm;
 
 use Illuminate\Support\Carbon;
 
@@ -103,7 +104,7 @@ class WithdrawlController extends Controller
     public function approve_request(Request $request)
     {
         $earn_id = $request->earn_id;
-        $earn = Withdraw::where('id', $earn_id)->where('status', 1)->update(['status' => 2, 'description' => 'Withdrawal successful, sent to your address']);
+        $earn = Withdraw::where('id', $earn_id)->where('status', 1)->update(['status' => 2, 'description' => 'Successful, sent to your address']);
         $earn = Withdraw::where('id', $earn_id)->first();
 
         if($earn->amount > 0)
