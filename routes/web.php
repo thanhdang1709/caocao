@@ -21,7 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('login', function () {
-    return response()->json(['error'=> 'Not Authencation']);
+    return response()->json(['error' => 'Not Authencation']);
 })->name('login');
 
 // Route::get('/verify/{email}', [VerifyEmailCodeController::class, 'verify']);
@@ -46,7 +46,6 @@ Route::group([
 
     Route::post('/approve_user', [EarnController::class, 'approve_user']);
     Route::post('/reject_user', [EarnController::class, 'reject_user']);
-    
 });
 
 
@@ -58,36 +57,36 @@ Route::group([
     Route::get('/list', [WithdrawlController::class, 'list']);
     Route::post('/approve_request', [WithdrawlController::class, 'approve_request']);
     Route::post('/reject_request', [WithdrawlController::class, 'reject_request']);
-    
 });
 
 
 Route::group([
     // 'middleware' => 'auth',
-    'prefix' => 'ticket'
+    'prefix' => 'ticket', 'as' => 'ticket.'
 
 ], function ($router) {
-    Route::get('/list', [TicketController::class, 'list']);
-    Route::get('/add', [TicketController::class, 'add']);
-    Route::post('/sent', [TicketController::class, 'sent']);
+    Route::get('/list', [TicketController::class, 'list'])->name('list');
+    Route::get('/add', [TicketController::class, 'add'])->name('add');
+    Route::get('/sent', [TicketController::class, 'sent'])->name('sent');
+    Route::get('/update', [TicketController::class, 'updateStatus'])->name('update');
 });
 
 
-Route::get('/reset_task', function(){
-    \DB::table('user_ptc_task')->truncate();
-    echo 'ok!!';
-});
+// Route::get('/reset_task', function () {
+//     \DB::table('user_ptc_task')->truncate();
+//     echo 'ok!!';
+// });
 
-Route::get('/reset_token', function(){
-    \DB::table('token_requests')->truncate();
-    echo 'ok!!';
-});
+// Route::get('/reset_token', function () {
+//     \DB::table('token_requests')->truncate();
+//     echo 'ok!!';
+// });
 
 Route::get('/payments/offers/tapjoy', [OfferController::class, 'offer_tapjoy']);
 
 
-Auth::routes();
+// Auth::routes();
 
-Route::get('/home', function() {
+Route::get('/home', function () {
     return view('home');
 })->name('home')->middleware('auth');
