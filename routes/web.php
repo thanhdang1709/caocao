@@ -68,6 +68,7 @@ Route::group([
     Route::get('/list', [TicketController::class, 'list'])->name('list');
     Route::get('/add', [TicketController::class, 'add'])->name('add');
     Route::get('/sent', [TicketController::class, 'sent'])->name('sent');
+    Route::get('/update', [TicketController::class, 'updateStatus'])->name('update');
 });
 
 

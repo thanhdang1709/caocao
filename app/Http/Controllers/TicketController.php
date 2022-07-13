@@ -13,7 +13,7 @@ class TicketController extends Controller
 {
     public function list()
     {
-        $tickets = Ticket::with('user')->get();
+        $tickets = Ticket::where('status', 1)->with('user')->get();
         return view('ticket.list', compact('tickets'));
     }
 
@@ -43,6 +43,13 @@ class TicketController extends Controller
 
         \Queue::push(new SendFcm($user = $user, $title, $notification));
 
+        return $this->responseOK([]);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $id = $request->id;
+        $status = Ticket::where('id', $id)->update(['status' => 2]);
         return $this->responseOK([]);
     }
 }

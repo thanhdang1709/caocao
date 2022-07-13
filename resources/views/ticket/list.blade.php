@@ -40,14 +40,15 @@
                         <tbody>
                             @foreach ($tickets as $key => $ticket)
                                 <tr>
-                                    <td>{{ $ticket->id }}</td>
-                                    <td><a href="/ticket/add?user_id={{$ticket->user_id}}">{{ $ticket->user_id }}</a></td>
+                                    <td class="id">{{ $ticket->id }}</td>
+                                    <td><a href="/ticket/add?user_id={{ $ticket->user_id }}">{{ $ticket->user_id }}</a>
+                                    </td>
                                     <td>{{ $ticket->user->email }}</td>
                                     <td>{{ $ticket->subject }}</td>
                                     <td>{{ $ticket->description }}</td>
                                     <td>{{ $ticket->created_at }}</td>
                                     <td>
-                                      
+                                        <button class="btn btn-primary change_status">Done</button>
                                     </td>
                                     {{-- <td><button class="btn btn-primary">Reply</button></td> --}}
                                     {{-- <td class="d-flex"> <button data-id="{{ $earn->id }}"
@@ -79,6 +80,42 @@
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 }
             });
+
+            $(".change_status").on("click", function() {
+                var id = $(this).closest("tr").find(".id").text();
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Do you want to change status?',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'YES',
+                    denyButtonText: `NO`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/ticket/update",
+                            type: "GET",
+                            data: {
+                                id: id
+                            },
+                            success: function(response) {
+                                if (response.type == "RESPONSE_OK") {
+                                    location.reload();
+                                }
+                            },
+                            error: function(error) {
+                                console.log(error);
+                                Swal.fire('Changes are not saved', error, 'info')
+                            }
+                        });
+
+
+                    } else if (result.isDenied) {
+                        Swal.fire('Changes are not saved', '', 'info')
+                    }
+                });
+            })
 
             $(".confirm").click(function(event) {
                 var self = this;
