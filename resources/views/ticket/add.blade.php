@@ -10,61 +10,99 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                
+                <form action="" method="POST">
+                    @csrf
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="">Enter user id:</label>
+                            <input type="text" class="form-control" name="user_id" id="user_id"
+                                placeholder="User id" value="@php if(isset($_GET['user_id'])){echo $_GET['user_id'];} @endphp">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Enter title:</label>
+                            <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Enter notification:</label>
+                            <br />
+                            <textarea class="form-control" name="notification" id="notification" cols="100%" rows="5"
+                                placeholder="Description"></textarea>
+                            {{-- <input type="text" class="form-control" name="description" id="description"
+                                placeholder="User id"> --}}
+                        </div>
+                        <div class="card-footer">
+                            <button type="" name="submit" id="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 @stop
 
 @section('js')
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script >
-    
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                }
+            });
 
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN':  "{{ csrf_token() }}"
-            }
-        });
+            $("#submit").click(function(event) {
+                var self = this;
+                // let earn_id = $(this).attr('data-id');
+                var user_id = $("#user_id").val();
+                var title = $("#title").val();
+                var notification = $("#notification").val();
+                // alert(title);
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Do you want to approve the request?',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    denyButtonText: `Don't`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/ticket/sent",
+                            type: "GET",
+                            data: {
+                                // earn_id: earn_id,
+                                user_id: user_id,
+                                title: title,
+                                notification: notification,
+                            },
+                            success: function(response) {
+                                if (response.type == "RESPONSE_OK") {
+                                    location.reload();
+                                }
+                            },
+                            error: function(error) {
+                                console.log(error);
+                                Swal.fire('Changes are not saved', error, 'info')
+                            }
+                        });
 
-        $(".confirm").click(function(event){
-            var self = this;
-            let earn_id = $(this).attr('data-id');
-            event.preventDefault();
-            Swal.fire({
-            title: 'Do you want to approve the request?',
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            denyButtonText: `Don't`,
-            }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/withdraw/1",
-                    type:"POST",
-                    data:{
-                    earn_id: earn_id,
-                    },
-                    success:function(response){
-                        if(response.type == "RESPONSE_OK") {
-                            location.reload();
-                        }
-                    },
-                    error: function(error) {
-                    console.log(error);
-                    Swal.fire('Changes are not saved', error, 'info')
+
+                    } else if (result.isDenied) {
+                        Swal.fire('Changes are not saved', '', 'info')
                     }
                 });
-
-                
-            } else if (result.isDenied) {
-                Swal.fire('Changes are not saved', '', 'info')
-            }
             });
-        }); 
-    });
-</script>
+        });
+    </script>
+    <style>
+        .form-control {
+            width: 500px;
+        }
+
+        form {
+            /* margin: auto; */
+        }
+    </style>
 
 
 @stop

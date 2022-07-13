@@ -1,30 +1,37 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Jobs\SendFcm;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use App\Models\Notification;
+use App\Models\Ticket;
 
 class TicketController extends Controller
 {
     public function list()
     {
-        return 'hello';
+        $tickets = Ticket::with('user')->get();
+        return view('ticket.list', compact('tickets'));
     }
 
     public function add(Request $request)
     {
-        
+        // $id = $request->id;
+        // $ticket = Ticket::where('id', $id)->with('user')->get();
+        // dd($ticket);
         return view('ticket.add');
     }
 
     public function sent(Request $request)
     {
-        $user = User::find(31);
+        // dd('123');
+        $user_id = $request->user_id;
+        $user = User::find($user_id);
         $title = $request->title ?? "AZ World";
-        $notification = $request->notification ?? "New version updated!";
+        $notification = $request->notification ?? "The first socialFi";
 
         $noti = new Notification();
         $noti->user_id = $request->user_id;
@@ -34,9 +41,8 @@ class TicketController extends Controller
         $noti->read = 0;
         $noti->save();
 
-
         \Queue::push(new SendFcm($user = $user, $title, $notification));
 
-        return 'sent';
+        return $this->responseOK([]);
     }
 }
