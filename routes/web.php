@@ -73,10 +73,6 @@ Route::group([
 });
 
 
-
-
-
-
 Route::get('/reset_task', function(){
     \DB::table('user_ptc_task')->truncate();
     echo 'ok!!';

@@ -16,20 +16,6 @@ class TicketController extends Controller
 
     public function add(Request $request)
     {
-        $user = User::find(31);
-        $title = $request->title ?? "AZ World";
-        $notification = $request->notification ?? "New version updated!";
-
-        $noti = new Notification();
-        $noti->user_id = $request->user_id;
-        $noti->subject = 'ticket';
-        $noti->title = $request->title;
-        $noti->content = $request->notification;
-        $noti->read = 0;
-        $noti->save();
-
-        \Queue::push(new SendFcm($user, $title, $notification));
-
         
         return view('ticket.add');
     }
