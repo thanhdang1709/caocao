@@ -291,11 +291,11 @@ return [
                 ],
             ],
         ],
-        [
-            'text' => 'Logout',
-            'url'  => 'logout',
-            'icon' => 'fas fa-sign-out-alt',
-        ],
+        // [
+        //     'text' => 'Logout',
+        //     'url'  => 'logout',
+        //     'icon' => 'fas fa-sign-out-alt',
+        // ],
         // ['header' => 'labels'],
         // [
         //     'text'       => 'important',
