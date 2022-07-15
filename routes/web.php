@@ -90,3 +90,7 @@ Route::get('/payments/offers/tapjoy', [OfferController::class, 'offer_tapjoy']);
 Route::get('/home', function () {
     return view('home');
 })->name('home')->middleware('auth');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
