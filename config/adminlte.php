@@ -249,7 +249,7 @@ return [
         ['header' => 'account_settings'],
         [
             'text' => 'Users',
-            'url'  => 'admin/settings',
+            'url'  => 'user/list',
             'icon' => 'fas fa-fw fa-user',
         ],
         [

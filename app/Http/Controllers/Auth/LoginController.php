@@ -212,9 +212,12 @@ class LoginController extends Controller
         //     return $this->responseError('Incorrect email or password', 201);
         // }
 
-        if (auth()->attempt(['email' => $credentials['email'], 'password' => ($request->password)])) {
+        if ((auth()->attempt(['email' => $credentials['email'], 'password' => ($request->password)]))) {
             if (auth()->user()->is_admin == 1) {
                 return redirect()->route('home');
+            } else {
+                return redirect()->back()
+                ->with('error', 'You do not have permission to login.');
             }
         } else {
             return redirect()->back()

@@ -25,6 +25,8 @@ class TicketController extends Controller
         return view('ticket.add');
     }
 
+  
+
     public function sent(Request $request)
     {
         // dd('123');
