@@ -31,6 +31,7 @@
                                 <th style="width: 10px">#</th>
                                 <th>User Id</th>
                                 <th>Email</th>
+                                <th>FCM</th>
                                 <th>Balance</th>
                                 <th>Pending</th>
                                 <th>Frozen</th>
@@ -49,6 +50,7 @@
                                 <td>{{$earn->id}}</td>
                                 <td>{{$earn->user_id}}</td>
                                 <td>{{$earn->user->email}}
+                                <td>{{substr($earn->user->fcm_token), 10}}
                                 <td>{{$earn->user->balance}}
                                 <td>{{$earn->user->pending_balance}}
                                 <td>{{$earn->user->frozen}}
