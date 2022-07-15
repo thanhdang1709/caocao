@@ -215,9 +215,6 @@ class LoginController extends Controller
         if (auth()->attempt(['email' => $credentials['email'], 'password' => ($request->password)])) {
             if (auth()->user()->is_admin == 1) {
                 return redirect()->route('home');
-            } else {
-                dd('user');
-                return redirect()->back();
             }
         } else {
             return redirect()->back()
