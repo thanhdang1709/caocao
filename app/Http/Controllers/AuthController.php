@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -12,21 +13,7 @@ use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    protected $password;
 
-    protected $email_allow;
-
-    public function __construct() {
-        $this->middleware(['check_token']);
-        $this->password = '170919';
-        $this->email_allow = [
-        ];
-    }
 
     public function verify(Request $request)
     {
@@ -40,17 +27,16 @@ class AuthController extends Controller
         }
 
         $email = $request->email;
-        if(!$request->changepass)
-        {
+        if (!$request->changepass) {
             $user = User::where('email', $email)->first();
-            if ( ! $user) {
+            if (!$user) {
             } else {
                 return $this->responseError('User already exists!', 201);
             }
         }
 
 
-        if ( ! in_array($email, $this->email_allow)) {
+        if (!in_array($email, $this->email_allow)) {
             \Queue::push(new SentMailVerify($email));
             // VerificationCode::send($email);
             return $this->responseOK(null, 'Sent verification code');
@@ -64,8 +50,9 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function register(Request $request){
-    	$validator = Validator::make($request->all(), [
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'pass' => 'required|min:6',
             'verify_code' => 'required|string|min:6',
@@ -78,16 +65,15 @@ class AuthController extends Controller
         $email = $request->email;
         $ref_code = strtoupper($request->ref_code);
 
-        if ( ! in_array($email, $this->email_allow)) {
+        if (!in_array($email, $this->email_allow)) {
 
-            if (VerificationCode::verify($code, $email))
-            {
+            if (VerificationCode::verify($code, $email)) {
 
                 $user = User::where('email', $email)->first();
-                if ( ! $user) {
+                if (!$user) {
                     User::create(array_merge(
                         $validator->validated(),
-                        ['password' => bcrypt($request->pass), 'code' => $this->genCode(6), 'name' => env('APP_NAME').'_'.rand(10000,99999)]
+                        ['password' => bcrypt($request->pass), 'code' => $this->genCode(6), 'name' => env('APP_NAME') . '_' . rand(10000, 99999)]
                     ));
                     $user = User::where('email', $email)->first();
                     $user->following()->attach(1);
@@ -97,30 +83,28 @@ class AuthController extends Controller
 
 
                 $user = User::where('email', $email)->first();
-                if($user) {
-                    if($user->ref_code) {
-
-
+                if ($user) {
+                    if ($user->ref_code) {
                     } else {
                         // if( $ref_code ) {
-                            if ($user->code != $ref_code) {
-                                $check_code = User::where('code', $ref_code)->first();
-                                if($check_code) {
-                                    User::where('id', $user->id)->update(['ref_code' => $ref_code]);
-                                    
-                                    $price = $this->getPrice();
-                                    $reward =  (double)env('POINT_REWARD_REF') / $price;
+                        if ($user->code != $ref_code) {
+                            $check_code = User::where('code', $ref_code)->first();
+                            if ($check_code) {
+                                User::where('id', $user->id)->update(['ref_code' => $ref_code]);
 
-                                    $total_earn = Earn::where('user_id', $user->id)->where('subject', 'ref')->whereDate('created_at', Carbon::today())->count();
-                                    if($total_earn < (int)env('LIMIT_ADS_VIDEO')) {
-                                        \DB::table('earns')->insert(['user_id' => $check_code->id, 'status' => 1, 'reward' => $reward, 'subject' => 'ref', 'description' => 'Reward from referral', 'created_at' => Carbon::now()]);
-                                        User::where('id', $check_code->id)->increment('pending_balance',  $reward);
-                                    }
+                                $price = $this->getPrice();
+                                $reward =  (float)env('POINT_REWARD_REF') / $price;
+
+                                $total_earn = Earn::where('user_id', $user->id)->where('subject', 'ref')->whereDate('created_at', Carbon::today())->count();
+                                if ($total_earn < (int)env('LIMIT_ADS_VIDEO')) {
+                                    \DB::table('earns')->insert(['user_id' => $check_code->id, 'status' => 1, 'reward' => $reward, 'subject' => 'ref', 'description' => 'Reward from referral', 'created_at' => Carbon::now()]);
+                                    User::where('id', $check_code->id)->increment('pending_balance',  $reward);
                                 }
-                                //  else {
-                                //     return $this->responseError('Invalid referral code', 201);
-                                // }
                             }
+                            //  else {
+                            //     return $this->responseError('Invalid referral code', 201);
+                            // }
+                        }
 
                         // } else {
                         //     return $this->responseError('Referral code required', 201);
@@ -130,7 +114,6 @@ class AuthController extends Controller
                 }
 
                 return $this->responseOK("Register new account success!", 200);
-
             } else {
 
                 return $this->responseError('Verification code is incorrect', 201);
@@ -138,12 +121,12 @@ class AuthController extends Controller
         } else {
             return $this->responseError('Please contact admin for Beta Test!', 201);
         }
-
     }
 
 
-    public function changepass(Request $request){
-    	$validator = Validator::make($request->all(), [
+    public function changepass(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'pass' => 'required|min:6',
             'code' => 'required|string|min:6',
@@ -156,10 +139,9 @@ class AuthController extends Controller
         $email = $request->email;
         $ref_code = strtoupper($request->ref_code);
 
-        if ( ! in_array($email, $this->email_allow)) {
+        if (!in_array($email, $this->email_allow)) {
 
-            if (VerificationCode::verify($code, $email))
-            {
+            if (VerificationCode::verify($code, $email)) {
 
                 $user = User::where('email', $email)->first();
                 if ($user->is_ban) {
@@ -174,7 +156,6 @@ class AuthController extends Controller
                 }
 
                 return $this->responseOK("Change new password success!", 200);
-
             } else {
 
                 return $this->responseError('Verification code is incorrect', 201);
@@ -182,12 +163,12 @@ class AuthController extends Controller
         } else {
             return $this->responseError('Please contact admin for Beta Test!', 201);
         }
-
     }
 
 
-    public function login(Request $request){
-    	$validator = Validator::make($request->all(), [
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'pass' => 'required|min:6',
         ]);
@@ -197,23 +178,16 @@ class AuthController extends Controller
         }
         $email = $request->email;
 
-        if ( ! in_array($email, $this->email_allow)) {
 
-                $credentials = $request->only(['email']);
+        $credentials = $request->only(['email']);
 
-                // $field = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        // $field = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
-                if (! $token = $this->guard()->attempt(['email' => $credentials['email'], 'password' => ($request->pass) ])) {
-                    return $this->responseError('Incorrect email or password', 201);
-                }
-
-                return $this->respondWithToken($token, Auth::user());
-
-
-        } else {
-            return $this->responseError('Please contact admin for Beta Test!', 201);
+        if (!$token = $this->guard()->attempt(['email' => $credentials['email'], 'password' => ($request->pass)])) {
+            return $this->responseError('Incorrect email or password', 201);
         }
 
+        return Auth::user();
     }
 
     // public function register(Request $request) {
@@ -244,13 +218,15 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout() {
+    public function logout()
+    {
         auth()->logout();
 
         return response()->json(['message' => 'User successfully signed out']);
     }
 
-    public function guard() {
+    public function guard()
+    {
         return Auth::guard('api');
     }
 
@@ -259,7 +235,8 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh() {
+    public function refresh()
+    {
         return $this->createNewToken(auth()->refresh());
     }
 
@@ -268,25 +245,27 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userProfile() {
+    public function userProfile()
+    {
         return response()->json(auth()->user());
     }
 
 
-    public function changePassWord(Request $request) {
+    public function changePassWord(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'old_password' => 'required|string|min:6',
             'new_password' => 'required|string|confirmed|min:6',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
         $userId = auth()->user()->id;
 
         $user = User::where('id', $userId)->update(
-                    ['password' => bcrypt($request->new_password)]
-                );
+            ['password' => bcrypt($request->new_password)]
+        );
 
         return response()->json([
             'message' => 'User successfully changed password',
