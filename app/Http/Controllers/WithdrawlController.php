@@ -95,7 +95,7 @@ class WithdrawlController extends Controller
 
         //Fetch list of results
 
-        $earns = $queryEarn->paginate(50);
+        $earns = $queryEarn->paginate(200);
         
 
         return view('withdraw.list', compact('earns'));
