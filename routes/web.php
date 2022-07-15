@@ -38,7 +38,7 @@ Route::get('/tracking', function () {
 
 
 Route::group([
-    // 'middleware' => 'auth',
+    'middleware' => 'auth',
     'prefix' => 'earn'
 
 ], function ($router) {
@@ -52,7 +52,7 @@ Route::group([
 
 
 Route::group([
-    // 'middleware' => 'auth',
+    'middleware' => 'auth',
     'prefix' => 'withdraw'
 
 ], function ($router) {
@@ -67,7 +67,7 @@ Route::group([
     'prefix' => 'ticket', 'as' => 'ticket.'
 
 ], function ($router) {
-    Route::get('/list', [TicketController::class, 'list'])->name('list')->middleware('is_admin');
+    Route::get('/list', [TicketController::class, 'list'])->name('list');
     Route::get('/add', [TicketController::class, 'add'])->name('add');
     Route::get('/sent', [TicketController::class, 'sent'])->name('sent');
     Route::get('/update', [TicketController::class, 'updateStatus'])->name('update');
