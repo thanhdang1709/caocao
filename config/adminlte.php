@@ -302,6 +302,25 @@ return [
                 ],
             ],
         ],
+        [
+            'text' => 'Ticket',
+            'icon' => 'fas fa-ticket-alt',
+            'submenu' => [
+                [
+                    'text' => 'List',
+                    'url' => 'ticket/list',
+                ],
+                [
+                    'text' => 'Add',
+                    'url' => 'ticket/add',
+                ],
+            ],
+        ],
+        [
+            'text' => 'Logout',
+            'url'  => 'logout',
+            'icon' => 'fas fa-sign-out-alt',
+        ],
         // ['header' => 'labels'],
         // [
         //     'text'       => 'important',
