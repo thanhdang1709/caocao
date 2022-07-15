@@ -11,14 +11,14 @@ use App\Jobs\SendFcm;
 use App\Models\Notification;
 
 class EarnController extends Controller
-{   
+{
 
 
     // private $user;
-    
+
 
     public function __construct()
-    {   
+    {
         // $this->middleware(['check_token']);
         // $this->user = auth()->user();
     }
@@ -33,11 +33,11 @@ class EarnController extends Controller
         $subject = $request->subject ?? 1;
         $from_date = $request->from_date;
         $to_date = $request->to_date;
-        
+
         $status = $request->status ? explode(",", $request->status) : [];
 
         $subjects = [];
-        
+
         if($subject == 1) {
             $subjects = ['tasks', 'spin', 'ads', 'donate', 'ref'];
         } else if ($subject == 2)  {
@@ -59,7 +59,7 @@ class EarnController extends Controller
         }
 
         $filters = $request->all();
-        
+
         // var_dump($filters);die;
         $queryEarn = Earn::query();
 
@@ -91,7 +91,7 @@ class EarnController extends Controller
         }
 
         if($from_date && $to_date) {
-            $queryEarn->whereDateBetween('created_at', $to_date, $from_date);
+            $queryEarn->whereDateBetween('created_at', $from_date, $to_date);
         }
 
         if($request->user_id) {
@@ -113,7 +113,7 @@ class EarnController extends Controller
         //Fetch list of results
 
         $earns = $queryEarn->WhereIn('subject', $subjects)->paginate(20);
-        
+
 
         return view('earns.list', compact('earns'));
     }
@@ -158,9 +158,9 @@ class EarnController extends Controller
             $noti->save();
             \Queue::push(new SendFcm($user,$title,$notification));
         }
-        
-       
-            
+
+
+
         return $this->responseOK(['message' => 'OK']);
     }
 
@@ -183,7 +183,7 @@ class EarnController extends Controller
             ]);
 
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
-            
+
             $user = User::where('id', $earn->user_id)->first();
             $log  = \DB::table('balance_logs')->whereId($log_id)->update([
                 'to_balance' => $user->balance,
@@ -204,8 +204,8 @@ class EarnController extends Controller
         }
 
         return $this->responseError('ERROR');
-            
-       
+
+
     }
 
 
@@ -221,17 +221,17 @@ class EarnController extends Controller
         }
 
         $list_id = [];
-        
+
         if($earns) {
             foreach($earns as $earn) {
                 Earn::where('id', $earn->id)->update(['status' => 2]);
                 array_push($list_id, $earn->id);
             }
-            
+
         }
 
         if(count($list_id) > 0)
-        {   
+        {
             foreach($list_id as $earn_id) {
                 $earn = Earn::where('id', $earn_id)->first();
                 $log_id = \DB::table('balance_logs')->insertGetId([
@@ -250,7 +250,7 @@ class EarnController extends Controller
                     'to_pending_balance' => $user->pending_balance,
                 ]);
             }
-            
+
             $title = "AZ WORLD";
             $notification = "Admin approved reward task, please check history!";
             $noti = new Notification();
@@ -262,7 +262,7 @@ class EarnController extends Controller
             $noti->save();
             \Queue::push(new SendFcm($user,$title,$notification));
         }
-            
+
         return $this->responseOK(['message' => 'OK']);
     }
 
@@ -276,11 +276,11 @@ class EarnController extends Controller
                 Earn::where('id', $earn->id)->update(['status' => 3, 'description' => 'Reject: You did not hold the token while the system was checking']);
                 array_push($list_id, $earn->id);
             }
-            
+
         }
 
         if(count($list_id) > 0)
-        {   
+        {
             foreach($list_id as $earn_id) {
                 $earn = Earn::where('id', $earn_id)->first();
                 $user = User::where('id', $user_id)->first();
@@ -314,10 +314,10 @@ class EarnController extends Controller
         foreach($earns as $earn) {
             Earn::where('id', $earn->id)->update(['reward' => 0]);
         }
-            
+
         return $this->responseOK(['message' => 'OK']);
-            
-       
+
+
     }
-    
+
 }
