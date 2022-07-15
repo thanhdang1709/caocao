@@ -23,7 +23,7 @@ class UserController extends Controller
         $this->user = auth()->user();
         $this->input = [1,1,1,0,0,1,1,0,1,0,0,1,1,1,1,0,1,2,1,1,1,1,1,1,1,1,1,1,0,0,4,1,1,0,0,1,1,0,1,0,2,1,0,2,0,1,0,1,0,0,0,0,0,0,1,0,0,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0];
         $this->spin_list_item = [
-            
+
             ['color' => '#29a8ab', 'value' => 1, 'label' =>  '1'],
             ['color' => '#fed766', 'value' => 2, 'label' => '2'],
             ['color' => '#011f4b', 'value' => 5, 'label' =>  '5'],
@@ -35,6 +35,8 @@ class UserController extends Controller
         ];
     }
 
+
+   
     /**
      * Display a listing of the resource.
      *
@@ -69,7 +71,7 @@ class UserController extends Controller
         ->withCount('posts')
         ->withCount('following')
         ->withCount('followers')
-       
+
         // ->with(['followers' => function ($q2) {
         //     $q2->select('users.id', 'users.name', 'users.email', 'users.avatar');
         // }])
@@ -83,9 +85,9 @@ class UserController extends Controller
 
     public function other_info($id, Request $request)
 
-    {   
+    {
         $user_id = $this->user->id;
-        
+
         $user = User::where('id', $id)
         ->withCount('posts')
         ->withCount('following')
@@ -176,7 +178,7 @@ class UserController extends Controller
         if(isset($fileName))  {
             $data['avatar'] = env('AWS_URL').'images/products/'.$fileName;
          }else{
-            
+
          }
         $update = User::where('id', $user_id)->update($data);
         $user = User::where('id', $user_id)->first();
@@ -190,7 +192,7 @@ class UserController extends Controller
     }
 
     public function address(Request $request)
-    {   
+    {
         // try {
         //     $token = JWTAuth::getToken();
         //     $apy = JWTAuth::getPayload($token)->toArray();
@@ -217,7 +219,7 @@ class UserController extends Controller
 
         // $email = $request->email;
         $address = $request->address;
-        
+
         $data = [
         'address' => $address ?? '',
         ];
@@ -241,12 +243,12 @@ class UserController extends Controller
     }
 
     public function refs(Request $request)
-    {   
+    {
         $user_id = $this->user->id;
         $user = User::where('id', $user_id)->with(['refs' => function ($q) use($user_id) {
             $q->where('id', '<>' ,$user_id);
     }])->first();
-        
+
         if($user) {
             $data = $user->refs;
             return $this->responseOK($data, 'success');
@@ -263,7 +265,7 @@ class UserController extends Controller
      */
 
     public function get_balance()
-    {   
+    {
         $address = $this->user->address;
         if($address)
         {
@@ -275,14 +277,14 @@ class UserController extends Controller
         } else {
             return $this->responseOK('You have not connected the metamask wallet. Please connect your address!', 200);
         }
-        
+
     }
 
     public function controller_check_vip()
-    {   
+    {
         $address = $this->user->address;
         if($address)
-        {   
+        {
             $balance = $this->check_vip($address);
             // $balance = 0;
             if((int)$balance > 0)
@@ -299,14 +301,14 @@ class UserController extends Controller
                 } else {
                     return $this->responseOK(['is_vip' => 0, 'vip_label' => 'FREE'], 'success');
                 }
-                
+
             } else {
                 return $this->responseOK(['is_vip' => 0], 'success');
             }
         } else {
             return $this->responseError('You have not connected the metamask wallet. Please connect your address!', 200);
         }
-        
+
     }
 
     public function disconnect() {
@@ -323,37 +325,37 @@ class UserController extends Controller
         }
     }
 
-    public function total_spin() 
+    public function total_spin()
     {
 
         $user_id = $this->user->id;
         $address = $this->user->address;
         // if($address && $this->check_vip($address))
-        // {   
+        // {
             $total_earn = Earn::where('user_id', $user_id)->where('subject', 'spin')->whereDate('created_at', Carbon::today())->count();
             if($total_earn < (int)env('LIMIT_REWARD_SPIN')) {
                     $spin = (int)env('LIMIT_REWARD_SPIN') - $total_earn;
 
                     $earn =  Earn::where('subject', 'spin')->where('status', 2)->sum('reward');
-                    
+
                     $data['total_spin'] = $spin;
                     $data['spin_pool'] = (int)env('POOL');
                     if($earn) {
                         $data['remain_pool'] = $data['spin_pool'] - $earn;
                     }
-                    
+
                     return $this->responseOK($data, 'success');
             } else {
                 return $this->responseError('You spin max daily.', 200);
             }
-           
+
         // } else {
         //     return $this->responseError('You\'re not a VIP member.', 200);
         // }
     }
 
 
-    public function spin_pool() 
+    public function spin_pool()
     {
 
         $user_id = $this->user->id;
@@ -365,12 +367,12 @@ class UserController extends Controller
         } else {
             $data['remain_pool'] = $data['spin_pool'];
         }
-        
+
         return $this->responseOK($data, 'success');
     }
 
 
-    public function spin() 
+    public function spin()
     {
 
         $user_id = $this->user->id;
@@ -380,33 +382,33 @@ class UserController extends Controller
         //     return $this->responseError('You are not in Mainnet List', 200);
         // }
         if( $balance >= (int)env('AMOUNT_TOKEN_IS_VIP1'))
-        {   
+        {
             $rand_keys = array_rand($this->input, 1);
-            
+
             return $this->responseOK($this->input[$rand_keys], 'success');
-           
+
         } else {
             return $this->responseError('You\'re not a VIP 2 member.', 200);
         }
     }
 
-    public function list_spin() 
+    public function list_spin()
     {
 
         $user_id = $this->user->id;
         $address = $this->user->address;
         // if($address && $this->check_vip($address))
-        // {   
-            
+        // {
+
             $data['items'] = $this->spin_list_item;
             return $this->responseOK($data, 'success');
-           
+
         // } else {
         //     return $this->responseError('You\'re not a VIP member.', 200);
         // }
     }
 
-    public function earn_spin(Request $request) 
+    public function earn_spin(Request $request)
     {
 
         $user_id = $this->user->id;
@@ -417,7 +419,7 @@ class UserController extends Controller
         //     return $this->responseError('You are not in Mainnet List', 200);
         // }
         if($address && $balance)
-        {   
+        {
 
             if( $balance >= (int)env('AMOUNT_TOKEN_IS_VIP1')) {
 
@@ -448,7 +450,7 @@ class UserController extends Controller
                     return $this->responseError('You spin max daily.', 200);
                 }
             } else {
-                return $this->responseError('You\'re not a VIP 2 member.', 200);    
+                return $this->responseError('You\'re not a VIP 2 member.', 200);
             }
         } else {
             return $this->responseError('You\'re not a VIP member.', 200);
@@ -456,10 +458,10 @@ class UserController extends Controller
     }
 
 
-    
 
 
-    
+
+
     public function destroy($id)
     {
         //
@@ -467,7 +469,7 @@ class UserController extends Controller
 
 
 
-    public function follow($id, Request $request) 
+    public function follow($id, Request $request)
     {
 
         $user_id = $this->user->id;
@@ -476,14 +478,14 @@ class UserController extends Controller
         $check_followed = Followers::where('follower_id', $myInfo->id)->where('following_id', $id)->first();
         if( ! $check_followed) {
             $myInfo->following()->attach($id);
-        } 
+        }
 
         return $this->responseOK("Follow success", 'success');
 
     }
 
 
-    public function unfollow($id, Request $request) 
+    public function unfollow($id, Request $request)
     {
 
         $user_id = $this->user->id;
@@ -492,14 +494,14 @@ class UserController extends Controller
         $check_followed = Followers::where('follower_id', $myInfo->id)->where('following_id', $id)->first();
         if($check_followed) {
             $myInfo->following()->detach($id);
-        } 
+        }
 
         return $this->responseOK("Unfollow success", 'success');
 
     }
 
 
-    public function followers(Request $request) 
+    public function followers(Request $request)
     {
 
         $user_id = $this->user->id;
@@ -516,7 +518,7 @@ class UserController extends Controller
 
     }
 
-    public function following(Request $request) 
+    public function following(Request $request)
     {
 
         $user_id = $this->user->id;
@@ -534,7 +536,7 @@ class UserController extends Controller
     }
 
 
-    public function donate(Request $request) 
+    public function donate(Request $request)
     {
 
         $user_id = $this->user->id;
@@ -544,7 +546,7 @@ class UserController extends Controller
 
         $myBalance = (double)$this->user->balance;
         if($myBalance >= $amount) {
-            
+
             $influ = User::where('id', $influ_id->user_id)->increment('balance', $amount);
             $my_user = User::where('id', $user_id)->decrement('balance', $amount);
             \DB::table('earns')->insert(['user_id' => $user_id, 'status' => 2, 'reward' => -($amount), 'subject' => 'donate', 'description' => 'Donate for post', 'created_at' => Carbon::now()]);

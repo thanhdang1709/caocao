@@ -4,8 +4,10 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EarnController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WithdrawlController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +28,10 @@ Route::get('login', function () {
     return view('auth.login');
 })->name('login');
 
+Route::get('/permission', function(){
+    return view('permission');
+})->name('permission');
+
 // Route::get('/verify/{email}', [VerifyEmailCodeController::class, 'verify']);
 
 // Route::get('/demo', function(){
@@ -38,7 +44,7 @@ Route::get('/tracking', function () {
 
 
 Route::group([
-    'middleware' => 'auth',
+    'middleware' => ['auth', 'is_admin'],
     'prefix' => 'earn'
 
 ], function ($router) {
@@ -52,7 +58,7 @@ Route::group([
 
 
 Route::group([
-    'middleware' => 'auth',
+    'middleware' => ['auth', 'is_admin'],
     'prefix' => 'withdraw'
 
 ], function ($router) {
@@ -63,7 +69,7 @@ Route::group([
 
 
 Route::group([
-    'middleware' => 'auth',
+    'middleware' => ['auth', 'is_admin'],
     'prefix' => 'ticket', 'as' => 'ticket.'
 
 ], function ($router) {
@@ -73,6 +79,8 @@ Route::group([
     Route::get('/update', [TicketController::class, 'updateStatus'])->name('update');
 });
 
+
+Route::get('user/list', [HomeController::class, 'getUser'])->middleware(['auth', 'is_admin']);
 
 // Route::get('/reset_task', function () {
 //     \DB::table('user_ptc_task')->truncate();
@@ -91,11 +99,11 @@ Route::get('/payments/offers/tapjoy', [OfferController::class, 'offer_tapjoy']);
 
 Route::get('/home', function () {
     return view('home');
-})->name('home')->middleware('auth');
+})->name('home')->middleware(['auth', 'is_admin']);
 
 // Auth::routes();
 Auth::routes(['logout' => false]);
 
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
