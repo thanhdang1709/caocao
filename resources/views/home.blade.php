@@ -1,5 +1,11 @@
 @extends('layouts.app')
+@extends('adminlte::page')
 
+@section('title', 'AZ WORLD LOGIN')
+
+@section('content_header')
+    <h1 class="m-0 text-dark">Login</h1>
+@stop
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
