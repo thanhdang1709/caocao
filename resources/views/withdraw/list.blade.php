@@ -31,7 +31,7 @@
                                 <th style="width: 10px">#</th>
                                 <th>User Id</th>
                                 <th>Email</th>
-                                <th>FCM</th>
+                                
                                 <th>Balance</th>
                                 <th>Pending</th>
                                 <th>Frozen</th>
@@ -45,14 +45,14 @@
                         </thead>
                         <tbody>
                             @foreach ($earns as $key => $earn )
-                            
+                            {{-- @dd($earn); --}}
                             <tr>
                                 <td>{{$earn->id}}</td>
                                 <td>{{$earn->user_id}}</td>
-                                <td>{{$earn->user->email}}
-                                <td>{{substr($earn->user->fcm_token,0, 10)}}
-                                <td>{{$earn->user->balance}}
-                                <td>{{$earn->user->pending_balance}}
+                                <td>{{$earn->user->email}}</td>
+                                <td>{{substr($earn->user->fcm_token,0, 10)}}{{$earn->sum_fcm_token}}</td>
+                                <td>{{$earn->user->balance}}</td>
+                                <td>{{$earn->user->pending_balance}}</td>
                                 <td>{{$earn->user->frozen}}
                                   
                                 </td>

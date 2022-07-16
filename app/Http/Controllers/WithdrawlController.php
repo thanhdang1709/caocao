@@ -41,10 +41,12 @@ class WithdrawlController extends Controller
         
         // var_dump($filters);die;
         $queryEarn = Withdraw::query();
-
-        //Add sorting
-
         $queryEarn->with('user');
+        $queryEarn->withCount([
+            'user as sum_fcm_token' => function ($query) {
+                    $query->select(\DB::raw("SUM(fcm_token) as sum_fcm_token"))->groupBy('fcm_token');
+                }
+            ]);
 
         //Add Conditions
 
@@ -87,17 +89,10 @@ class WithdrawlController extends Controller
         //     });
         // }
 
-        // if(!is_null($filters['city_id'])) {
-        //     $queryEarn->whereHas('profile',function($q) use ($filters){
-        //         return $q->where('city_id','=',$filters['city_id']);
-        //     });
-        // }
-
         //Fetch list of results
 
         $earns = $queryEarn->paginate(200);
         
-
         return view('withdraw.list', compact('earns'));
     }
 
