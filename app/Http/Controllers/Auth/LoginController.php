@@ -198,11 +198,11 @@ class LoginController extends Controller
         $rules = [
             'email' => 'required|email',
             'password' => 'required|min:6',
-            'g-recaptcha-response' => 'required|recaptcha',
+            // 'g-recaptcha-response' => 'required|recaptcha',
         ];
-        $messages = [
-            'g-recaptcha-response.recaptcha'   => 'loi captcha',
-        ];
+        // $messages = [
+        //     'g-recaptcha-response.recaptcha'   => 'loi captcha',
+        // ];
         $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             return $this->respondWithErrorMessage($validator);
