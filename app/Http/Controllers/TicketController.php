@@ -25,7 +25,7 @@ class TicketController extends Controller
         return view('ticket.add');
     }
 
-  
+
 
     public function sent(Request $request)
     {
@@ -38,8 +38,8 @@ class TicketController extends Controller
         $noti = new Notification();
         $noti->user_id = $request->user_id;
         $noti->subject = 'ticket';
-        $noti->title = $request->title;
-        $noti->content = $request->notification;
+        $noti->title = $title;
+        $noti->content = $notification;
         $noti->read = 0;
         $noti->save();
 

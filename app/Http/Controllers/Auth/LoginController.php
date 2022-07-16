@@ -197,6 +197,7 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:6',
+            'g-recaptcha-response' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -205,12 +206,6 @@ class LoginController extends Controller
         $email = $request->email;
 
         $credentials = $request->only(['email']);
-
-        // $field = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-
-        // if (!$token = auth()->attempt(['email' => $credentials['email'], 'password' => ($request->pass)])) {
-        //     return $this->responseError('Incorrect email or password', 201);
-        // }
 
         if ((auth()->attempt(['email' => $credentials['email'], 'password' => ($request->password)]))) {
             if (auth()->user()->is_admin == 1) {

@@ -11,7 +11,7 @@ class ReCaptcha
             [
                 'form_params' =>
                     [
-                        'secret' => config('services.recaptcha.secret'),
+                        'secret' => '6Le9j_UgAAAAALjHc7pVnlxgJ8l6qHGZLgLRo4RM',
                         'response' => $value
                     ]
             ]
