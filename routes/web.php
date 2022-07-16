@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CaptchaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EarnController;
 use App\Http\Controllers\HomeController;
@@ -114,5 +115,4 @@ Route::get('/home', function () {
 Auth::routes(['logout' => false]);
 
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

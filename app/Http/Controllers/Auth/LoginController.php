@@ -194,23 +194,22 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+
+        $rules = [
             'email' => 'required|email',
             'password' => 'required|min:6',
-        ]);
-
+            'g-recaptcha-response' => 'required|captcha',
+        ];
+        $messages = [
+            'g-recaptcha-response.captcha'   => 'loi captcha',
+        ];
+        $validator = \Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return $this->respondWithErrorMessage($validator);
         }
         $email = $request->email;
 
         $credentials = $request->only(['email']);
-
-        // $field = filter_var($credentials['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-
-        // if (!$token = auth()->attempt(['email' => $credentials['email'], 'password' => ($request->pass)])) {
-        //     return $this->responseError('Incorrect email or password', 201);
-        // }
 
         if ((auth()->attempt(['email' => $credentials['email'], 'password' => ($request->password)]))) {
             if (auth()->user()->is_admin == 1) {
