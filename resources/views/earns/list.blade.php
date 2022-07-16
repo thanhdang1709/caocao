@@ -34,7 +34,7 @@
                             <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
                             <label for="">đã duyệt</label>
                         </div> --}}
-                        <input type="text" name="user_id" id="iser_id" placeholder="User id..."
+                        <input type="text" name="user_id" class="user_id" placeholder="User id..."
                             style="width: 100px; margin-right:40px;">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -117,23 +117,74 @@
                 }
             });
 
-            $(function() {
-                $('input[name="daterange"]').daterangepicker({
-                    opens: 'left'
-                }, function(start, end, label) {
-                    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') +
-                        ' to ' + end.format('YYYY-MM-DD'));
-                    var start = start.format('YYYY-MM-DD');
-                    var end = end.format('YYYY-MM-DD');
+            // $('input[name="daterange"]').daterangepicker({
+            //     opens: 'left'
+            // }, function(start, end, label) {
+            //     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') +
+            //         ' to ' + end.format('YYYY-MM-DD'));
+            //     var start = start.format('YYYY-MM-DD');
+            //     var end = end.format('YYYY-MM-DD');
 
-                });
+            // });
+
+            $('.searchbtn').click(function() {
+                var user_id = $('.user_id').val();
+                var start = $('input[name="daterange"]').data('daterangepicker').startDate.format(
+                    'YYYY-MM-DD');
+                var end = $('input[name="daterange"]').data('daterangepicker').endDate.format(
+                    'YYYY-MM-DD');
+                window.location.href = '/earn/list?user_id=' + user_id + '&from_date=' + start + '&to_date=' + end +
+                    '&status=1';
             });
 
-            $('.searchbtn').click(function(){
-                alert();
-                window.location.href = '/earn/list?from_date=' + start + '&to_date=' + end +
-                        '&status=1';
-            });
+            $('input[name="daterange"]').daterangepicker({
+                    startDate: moment().subtract('days', 29),
+                    endDate: moment(),
+                    dateLimit: {
+                        days: 60
+                    },
+                    showDropdowns: true,
+                    showWeekNumbers: true,
+                    timePicker: false,
+                    timePickerIncrement: 1,
+                    timePicker12Hour: true,
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        // 'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                        // 'Last 7 Days': [moment().subtract('days', 6), moment()],
+                        // 'Last 30 Days': [moment().subtract('days', 29), moment()],
+                        // 'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        // 'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract(
+                        //     'month', 1).endOf('month')]
+                    },
+                    opens: 'left',
+                    buttonClasses: ['btn btn-default'],
+                    applyClass: 'btn-small btn-primary',
+                    cancelClass: 'btn-small',
+                    format: 'DD/MM/YYYY',
+                    separator: ' to ',
+                    locale: {
+                        applyLabel: 'Submit',
+                        fromLabel: 'From',
+                        toLabel: 'To',
+                        customRangeLabel: 'Custom Range',
+                        daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+                            'September', 'October', 'November', 'December'
+                        ],
+                        firstDay: 1
+                    }
+                },
+                function(start, end) {
+                    console.log("Callback has been called!");
+                    $('#reportrange span').html(start.format('D MMMM YYYY') + ' - ' + end.format(
+                        'D MMMM YYYY'));
+
+                }
+            );
+            //Set the initial state of the picker label
+            $('#reportrange span').html(moment().subtract('days', 29).format('D MMMM YYYY') + ' - ' + moment()
+                .format('D MMMM YYYY'));
 
 
             $(".confirm").click(function(event) {
