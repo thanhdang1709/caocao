@@ -85,7 +85,6 @@ class EarnController extends Controller
             $queryEarn->whereIn('status', $status);
         }
 
-
         if($request->today) {
             $queryEarn->whereDate( 'created_at', '=', now()->subDays(1));
         }

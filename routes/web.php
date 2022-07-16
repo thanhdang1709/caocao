@@ -28,7 +28,7 @@ Route::get('login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/permission', function(){
+Route::get('/permission', function () {
     return view('permission');
 })->name('permission');
 
@@ -80,7 +80,16 @@ Route::group([
 });
 
 
-Route::get('user/list', [HomeController::class, 'getUser'])->middleware(['auth', 'is_admin']);
+Route::group([
+    'middleware' => ['auth', 'is_admin'],
+    'prefix' => 'user', 'as' => 'user.'
+
+], function ($router) {
+    Route::get('/list', [HomeController::class, 'getUser']);
+    Route::get('/ban', [HomeController::class, 'banUser']);
+    Route::get('/banned', [HomeController::class, 'getBannedUser']);
+});
+
 
 // Route::get('/reset_task', function () {
 //     \DB::table('user_ptc_task')->truncate();

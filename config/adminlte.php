@@ -253,8 +253,8 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
-            'text' => 'Baned',
-            'url'  => 'admin/settings',
+            'text' => 'Badned',
+            'url'  => 'user/banned',
             'icon' => 'fas fa-fw fa-lock',
         ],
         [
