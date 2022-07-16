@@ -3,7 +3,7 @@
 @section('title', 'AZ WORLD')
 
 @section('content_header')
-    <h1 class="m-0 text-dark">List users</h1>
+    <h1 class="m-0 text-dark">List users banned</h1>
 @stop
 
 
@@ -15,7 +15,8 @@
                 <div class="col-md-4 offset-md-8">
                     <form action="" method="GET">
                         <div class="input-group input-group-lg">
-                            <input type="search" class="form-control form-control-lg" name="user_search" placeholder="Enter email or address... ">
+                            <input type="search" class="form-control form-control-lg" name="user_search"
+                                placeholder="Enter email or address... ">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-lg btn-default">
                                     <i class="fa fa-search"></i>
@@ -68,9 +69,7 @@
                                     <td>{{ $user->frozen }}</td>
                                     <td>{{ $user->is_admin == 1 ? 'Admin' : 'User' }}</td>
                                     <td>{{ $user->created_at }}</td>
-                                    <td>
-                                        <button class="btn btn-danger baned">Ban</button>
-                                    </td>
+                                    <td>Banned</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -96,42 +95,6 @@
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 }
             });
-
-            $(".baned").on("click", function() {
-                var id = $(this).closest("tr").find(".id").text();
-                event.preventDefault();
-                Swal.fire({
-                    title: 'Do you want to change status?',
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: 'YES',
-                    denyButtonText: `NO`,
-                }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "/user/ban",
-                            type: "GET",
-                            data: {
-                                id: id
-                            },
-                            success: function(response) {
-                                if (response.type == "RESPONSE_OK") {
-                                    location.reload();
-                                }
-                            },
-                            error: function(error) {
-                                console.log(error);
-                                Swal.fire('Changes are not saved', error, 'info')
-                            }
-                        });
-
-
-                    } else if (result.isDenied) {
-                        Swal.fire('Changes are not saved', '', 'info')
-                    }
-                });
-            })
 
         });
     </script>
