@@ -198,7 +198,7 @@ class LoginController extends Controller
         $rules = [
             'email' => 'required|email',
             'password' => 'required|min:6',
-            // 'g-recaptcha-response' => 'required|recaptcha',
+            // 'g-recaptcha-response' => 'required|captcha',
         ];
         $messages = [
             // 'g-recaptcha-response.recaptcha'   => 'loi captcha',

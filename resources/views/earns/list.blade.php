@@ -34,8 +34,7 @@
                             <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
                             <label for="">đã duyệt</label>
                         </div> --}}
-                        <input type="text" name="user_id" class="user_id" placeholder="User id..."
-                            style="width: 100px; margin-right:40px;">
+                        <input type="text" name="user_id" class="user_id" placeholder="User id..." style="width: 100px; margin-right:40px;">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
                                 <i class="far fa-calendar-alt"></i>
@@ -51,7 +50,7 @@
                             <tr>
                                 <th style="width: 10px">#</th>
                                 <th>User Id</th>
-                                <th>Email</th>
+                                <th colspan="2">Email</th>
                                 <th>Address</th>
                                 <th>Reward</th>
                                 <th>Status</th>
@@ -67,25 +66,18 @@
                                     <td>{{ $earn->id }}</td>
                                     <td>{{ $earn->user_id }}</td>
                                     @if ($earn->user)
-                                        <td>{{ $earn->user->email }}
-                                            <button user_id="{{ $earn->user_id }}"
-                                                class="btn btn-success mr-2 confirm-user">Approve user</button> <button
-                                                user_id="{{ $earn->user_id }}"
-                                                class="btn btn-danger mr-2 reject-user">Reject user</button>
+                                        <td>{{ $earn->user->email }}</td>
+                                        <td style="width: 300px">
+                                            <button user_id="{{ $earn->user_id }}" class="btn btn-success mr-2 confirm-user">Approve user</button> <button user_id="{{ $earn->user_id }}" class="btn btn-danger mr-2 reject-user">Reject user</button>
                                         </td>
-
-                                        <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $earn->user->address }}"
-                                                target="_blank"> {{ $earn->user->address }}</a></td>
+                                        <td style="width: 400px"> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $earn->user->address }}" target="_blank"> {{ $earn->user->address }}</a></td>
                                     @endif
                                     <td class="text-red text-bold">{{ number_format($earn->reward) }}</td>
                                     <td>{{ $earn->status }}</td>
                                     <td>{{ $earn->subject }}</td>
                                     <td>{{ $earn->description }}</td>
                                     <th>{{ $earn->created_at }}</th>
-                                    <td class="d-flex"> <button data-id="{{ $earn->id }}"
-                                            class="btn btn-success mr-2 confirm">Approve</button> <button
-                                            data-id="{{ $earn->id }}"
-                                            class="btn btn-danger mr-2 reject">Reject</button> </td>
+                                    <td class="d-flex"> <button data-id="{{ $earn->id }}" class="btn btn-success mr-2 confirm">Approve</button> <button data-id="{{ $earn->id }}" class="btn btn-danger mr-2 reject">Reject</button> </td>
                                 </tr>
                             @endforeach
                         </tbody>
