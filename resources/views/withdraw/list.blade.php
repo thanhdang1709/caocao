@@ -10,10 +10,16 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="col-md-4 offset-md-8">
-                    <form action="" method="GET">
+                <div class="col-md-4 offset-md-8 input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <input type="text" name="daterange" style="margin-right: 20px;" />
+                    <form action="" method="GET" style="margin-right: 20px;">
                         <div class="input-group input-group-lg">
-                            <input type="search" class="form-control form-control-lg" name="user_search" placeholder="Enter email, address or devices... ">
+                            <input type="search" class="form-control form-control-lg user_search" name="user_search" placeholder="Enter email or address... ">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-lg btn-default">
                                     <i class="fa fa-search"></i>
@@ -21,6 +27,7 @@
                             </div>
                         </div>
                     </form>
+                    <button class="btn btn-primary searchbtn">Search...</button>
                 </div>
                 @if (!empty($success))
                     <div class="alert alert-success alert-dismissible">
@@ -92,6 +99,11 @@
 
 @section('js')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://adminlte.io/themes/v3/plugins/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
@@ -99,6 +111,61 @@
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 }
             });
+
+            $('.searchbtn').click(function() {
+                var user_id = $('.user_id').val();
+                var start = $('input[name="daterange"]').data('daterangepicker').startDate.format(
+                    'YYYY-MM-DD');
+                var end = $('input[name="daterange"]').data('daterangepicker').endDate.format(
+                    'YYYY-MM-DD');
+                var user_search = $('.user_search').val();
+                window.location.href = '/withdraw/list?from_date=' + start + '&to_date=' + end + '&user_search=' + user_search +
+                    '&status=1';
+            });
+
+            $('input[name="daterange"]').daterangepicker({
+                    startDate: moment().subtract('days', 29),
+                    endDate: moment(),
+                    dateLimit: {
+                        days: 60
+                    },
+                    showDropdowns: true,
+                    showWeekNumbers: true,
+                    timePicker: false,
+                    timePickerIncrement: 1,
+                    timePicker12Hour: true,
+                    ranges: {
+                        'Today': [moment(), moment()],
+                    },
+                    opens: 'left',
+                    buttonClasses: ['btn btn-default'],
+                    applyClass: 'btn-small btn-primary',
+                    cancelClass: 'btn-small',
+                    format: 'DD/MM/YYYY',
+                    separator: ' to ',
+                    locale: {
+                        applyLabel: 'Submit',
+                        fromLabel: 'From',
+                        toLabel: 'To',
+                        customRangeLabel: 'Custom Range',
+                        daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+                            'September', 'October', 'November', 'December'
+                        ],
+                        firstDay: 1
+                    }
+                },
+                function(start, end) {
+                    console.log("Callback has been called!");
+                    $('#reportrange span').html(start.format('D MMMM YYYY') + ' - ' + end.format(
+                        'D MMMM YYYY'));
+
+                }
+            );
+
+            $('#reportrange span').html(moment().subtract('days', 29).format('D MMMM YYYY') + ' - ' + moment()
+                .format('D MMMM YYYY'));
+
 
             $(".confirm").click(function(event) {
                 var self = this;
