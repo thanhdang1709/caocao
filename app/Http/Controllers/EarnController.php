@@ -111,10 +111,12 @@ class EarnController extends Controller
 
         //Fetch list of results
 
+        $totalEarns =  $queryEarn->where('status', 1)->sum('reward');
+
         $earns = $queryEarn->WhereIn('subject', $subjects)->paginate(20);
 
 
-        return view('earns.list', compact('earns'));
+        return view('earns.list', compact(['earns','totalEarns']));
     }
 
     public function approve_task(Request $request)

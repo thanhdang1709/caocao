@@ -81,6 +81,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        <p style="font-size: 30px; text-align: right;"><span style="color: red">Earn total: </span>{{ number_format($totalEarns) }}</p>
                     </table>
                     <div class="d-flex justify-content-center mt-2">
                         @php
