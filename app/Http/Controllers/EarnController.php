@@ -134,7 +134,7 @@ class EarnController extends Controller
                 'start_balance' => $user->balance,
                 'start_pending_balance' => $user->pending_balance,
                 'amount' => (double)$earn->reward,
-                'description' => 'Admin approve reward task '.$earn->id,
+                'description' => 'Partners approve reward task '.$earn->id,
             ]);
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
             User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);
@@ -147,7 +147,7 @@ class EarnController extends Controller
             Earn::where('id', $earn_id)->where('status', 1)->update(['status' => 2]);
 
             $title = "AZ WORLD";
-            $notification = "Admin approved reward task, please check history!";
+            $notification = "Partners approved reward task, please check history!";
             $noti = new Notification();
             $noti->user_id = $user->id;
             $noti->subject = 'reward';
@@ -178,7 +178,7 @@ class EarnController extends Controller
                 'start_balance' => $user->balance,
                 'start_pending_balance' => $user->pending_balance,
                 'amount' => (double)$earn->reward,
-                'description' => 'Admin reject reward task  '.$earn->id,
+                'description' => 'Partners reject reward task  '.$earn->id,
             ]);
 
             User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
@@ -189,7 +189,7 @@ class EarnController extends Controller
                 'to_pending_balance' => $user->pending_balance,
             ]);
             $title = "AZ WORLD";
-            $notification = "Admin rejected task. Reason: You did not hold the token while the system was checking, please check history!";
+            $notification = "Partners rejected task. Reason: You did not hold the token while the system was checking, please check history!";
             $noti = new Notification();
             $noti->user_id = $user->id;
             $noti->subject = 'reward';
@@ -238,7 +238,7 @@ class EarnController extends Controller
                     'start_balance' => $user->balance,
                     'start_pending_balance' => $user->pending_balance,
                     'amount' => (double)$earn->reward,
-                    'description' => 'Admin approve reward task  '.$earn->id,
+                    'description' => 'Partners approve reward task  '.$earn->id,
                 ]);
                 User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
                 User::where('id', $earn->user_id)->increment('balance', (double)$earn->reward);
@@ -251,7 +251,7 @@ class EarnController extends Controller
             }
 
             $title = "AZ WORLD";
-            $notification = "Admin approved reward task, please check history!";
+            $notification = "Partners approved reward task, please check history!";
             $noti = new Notification();
             $noti->user_id = $user->id;
             $noti->subject = 'reward';
@@ -288,7 +288,7 @@ class EarnController extends Controller
                     'start_balance' => $user->balance,
                     'start_pending_balance' => $user->pending_balance,
                     'amount' => (double)$earn->reward,
-                    'description' => 'Admin reject reward task  '.$earn->id,
+                    'description' => 'Partners reject reward task  '.$earn->id,
                 ]);
                 User::where('id', $earn->user_id)->decrement('pending_balance', (double)$earn->reward);
                 $user = User::where('id', $earn->user_id)->first();
@@ -299,7 +299,7 @@ class EarnController extends Controller
             }
 
             $title = "AZ WORLD";
-            $notification = "Admin rejected task. Reason: You did not hold the token while the system was checking, please check history!";
+            $notification = "Partners rejected task. Reason: You did not hold the token while the system was checking, please check history!";
             $noti = new Notification();
             $noti->user_id = $user->id;
             $noti->subject = 'reward';

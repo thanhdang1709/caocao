@@ -51,8 +51,8 @@ class SendFcm implements ShouldQueue
         ])->post('https://fcm.googleapis.com/fcm/send', [
             'registration_ids' => $ids,
             'notification'=> [
-                "title"=> $this->title,
-                "body"=> $this->notification,
+                "title"=> $this->notification,
+                "body"=> $this->title,
                 "sound" => "default"
             ],
             "data"=>[
