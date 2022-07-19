@@ -31,6 +31,7 @@
                                 <th style="width: 10px">#</th>
                                 <th>User Id</th>
                                 <th>Email</th>
+                                <th>Devices</th>
                                 <th>Balance</th>
                                 <th>Pending</th>
                                 <th>Frozen</th>
