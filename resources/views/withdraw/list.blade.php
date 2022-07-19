@@ -63,8 +63,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                            $total_amount = 0;
+                            @endphp
                             @foreach ($earns as $key => $earn)
-                                {{-- @dd($earn); --}}
+                            @php
+                            $total_amount += $earn->amount;
+                            @endphp
                                 <tr>
                                     <td>{{ $earn->id }}</td>
                                     <td>{{ $earn->user_id }}</td>
@@ -84,6 +89,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                            <p style="font-size: 30px; text-align: right;"><span style="color: red">Withdrawal total: </span>{{ number_format($total_amount) }}</p>
                     </table>
                     <div class="d-flex justify-content-center mt-2">
                         @php
