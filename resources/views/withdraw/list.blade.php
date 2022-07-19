@@ -69,14 +69,14 @@
                                     <td>{{ $earn->id }}</td>
                                     <td>{{ $earn->user_id }}</td>
                                     <td>{{ $earn->user->email }}</td>
-                                    <td>{{ substr($earn->user->fcm_token, 0, 10) }}</td>
+                                    <td><a href="/withdraw/list?user_search={{ substr($earn->user->fcm_token, 0, 10) }}" target="_blank" class="click_to_search">{{ substr($earn->user->fcm_token, 0, 10) }}</a></td>
                                     <td>{{ $earn->user->balance }}</td>
                                     <td>{{ $earn->user->pending_balance }}</td>
                                     <td>{{ $earn->user->frozen }}
 
                                     </td>
                                     <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $earn->user->address }}" target="_blank"> {{ $earn->user->address }}</a></td>
-                                    <td class="text-red text-bold">{{ number_format($earn->amount) }}</td>
+                                    <td class="text-red text-bold">{{ round($earn->amount) }}</td>
                                     <td>{{ $earn->status }}</td>
                                     <td>{{ $earn->description }}</td>
                                     <th>{{ $earn->created_at }}</th>

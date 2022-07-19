@@ -15,7 +15,7 @@
                 <div class="col-md-4 offset-md-8">
                     <form action="" method="GET">
                         <div class="input-group input-group-lg">
-                            <input type="search" class="form-control form-control-lg" name="user_search" placeholder="Enter email or address... ">
+                            <input type="search" class="form-control form-control-lg" name="user_search" placeholder="Search email, devices or address... ">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-lg btn-default">
                                     <i class="fa fa-search"></i>
@@ -47,6 +47,7 @@
                                 <th>User Id</th>
                                 <th>Email</th>
                                 <th>Address</th>
+                                <th>Devices</th>
                                 <th>Balance</th>
                                 <th>Pending</th>
                                 <th>Frozen</th>
@@ -61,8 +62,8 @@
                                     <td></td>
                                     <td class="id">{{ $user->id }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $user->address }}"
-                                            target="_blank"> {{ $user->address }}</a></td>
+                                    <td> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $user->address }}" target="_blank"> {{ $user->address }}</a></td>
+                                    <td>{{ substr($user->fcm_token, 0, 10) }}</td>
                                     <td>{{ $user->balance }}</td>
                                     <td>{{ $user->pending_balance }}</td>
                                     <td>{{ $user->frozen }}</td>
