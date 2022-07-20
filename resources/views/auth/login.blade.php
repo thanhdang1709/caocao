@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
-                            <input type="hidden" name="g-recaptcha-response" id="captcha_token">
+                            {{-- <input type="hidden" name="g-recaptcha-response" id="captcha_token"> --}}
 
                             <div class="row mb-3">
                                 <label for="email"
@@ -97,7 +97,7 @@
     </div>
 @endsection
 @section('js')
-    <script src="https://www.google.com/recaptcha/api.js?render=6Le9j_UgAAAAANjy74xBKFRpNHXYXW-xbBCc2b_o"></script>
+    {{-- <script src="https://www.google.com/recaptcha/api.js?render=6Le9j_UgAAAAANjy74xBKFRpNHXYXW-xbBCc2b_o"></script>
     <script type="text/javascript">
         grecaptcha.ready(function() {
             grecaptcha.execute('6Le9j_UgAAAAANjy74xBKFRpNHXYXW-xbBCc2b_o', {
@@ -107,5 +107,5 @@
                 document.getElementById("captcha_token").value = token;
             });
         });
-    </script>
+    </script> --}}
 @stop

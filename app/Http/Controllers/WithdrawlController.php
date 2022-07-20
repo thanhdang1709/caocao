@@ -12,14 +12,14 @@ use App\Jobs\SendFcm;
 use Illuminate\Support\Carbon;
 
 class WithdrawlController extends Controller
-{   
+{
 
 
     // private $user;
-    
+
 
     public function __construct()
-    {   
+    {
         // $this->middleware(['check_token']);
         // $this->user = auth()->user();
     }
@@ -34,19 +34,19 @@ class WithdrawlController extends Controller
         $subject = $request->subject ?? 1;
         $from_date = $request->from_date;
         $to_date = $request->to_date;
-        
+
         $status = $request->status ? explode(",", $request->status) : [];
 
         $filters = $request->all();
-        
+
         // var_dump($filters);die;
         $queryEarn = Withdraw::query();
         $queryEarn->with('user');
         $queryEarn->withCount([
             'user as sum_fcm_token' => function ($query) {
-                    $query->select(\DB::raw("SUM(fcm_token) as sum_fcm_token"))->groupBy('fcm_token');
-                }
-            ]);
+                $query->select(\DB::raw("SUM(fcm_token) as sum_fcm_token"))->groupBy('fcm_token');
+            }
+        ]);
 
         //Add Conditions
 
@@ -56,31 +56,38 @@ class WithdrawlController extends Controller
         $order_by = $request->order_by ?? 'desc';
         $sort = $request->sort ?? 'id';
 
-        if($sort && $sort == 'id') {
-            $queryEarn->orderBy('id',$order_by);
+        if ($sort && $sort == 'id') {
+            $queryEarn->orderBy('id', $order_by);
         }
-        if($sort && $sort == 'amount') {
-            $queryEarn->orderBy('amount',$order_by);
+        if ($sort && $sort == 'amount') {
+            $queryEarn->orderBy('amount', $order_by);
         }
-        if($sort && $sort == 'date') {
-            $queryEarn->orderBy('created_at',$order_by);
+        if ($sort && $sort == 'date') {
+            $queryEarn->orderBy('created_at', $order_by);
         }
 
-        if($status) {
+        if ($status) {
             $queryEarn->whereIn('status', $status);
         }
 
 
-        if($request->today) {
-            $queryEarn->whereDate( 'created_at', '=', Carbon::now());
+        if ($request->today) {
+            $queryEarn->whereDate('created_at', '=', Carbon::now());
         }
 
-        if($from_date && $to_date) {
+        if ($from_date && $to_date) {
             $queryEarn->whereDateBetween('created_at', $to_date, $from_date);
         }
 
-        if($request->user_id) {
-            $queryEarn->where('user_id','=', $request->user_id);
+        if ($request->user_id) {
+            $queryEarn->where('user_id', '=', $request->user_id);
+        }
+
+        if ($request->user_search) {
+            $user_search = $request->user_search;
+            $queryEarn->whereHas('user', function ($query) use ($user_search) {
+                return $query->where('email', 'like', '%' . $user_search . '%')->orWhere('address', 'like', '%' . $user_search . '%')->orWhere('fcm_token', 'like', '%' . $user_search . '%');
+            });
         }
 
         // if(!is_null($filters['state_id'])) {
@@ -91,8 +98,20 @@ class WithdrawlController extends Controller
 
         //Fetch list of results
 
+        // $query = User::query();
+        // $user_search = $request->user_search;
+        // if ($user_search) {
+        //     $query->where('email', 'like', '%' . $user_search . '%')->orWhere('address', 'like', '%' . $user_search . '%');
+        // }
+
+        // $users = $query->where('is_ban', 0)->paginate(20);
+
+        // return view('user.list', compact('users'));
+
+        // $earns = $ qu
+
         $earns = $queryEarn->paginate(200);
-        
+
         return view('withdraw.list', compact('earns'));
     }
 
@@ -102,17 +121,16 @@ class WithdrawlController extends Controller
         $earn = Withdraw::where('id', $earn_id)->where('status', 1)->update(['status' => 2, 'description' => 'Successful, sent to your address']);
         $earn = Withdraw::where('id', $earn_id)->first();
 
-        if($earn->amount > 0)
-        {
+        if ($earn->amount > 0) {
             $user = User::where('id', $earn->user_id)->first();
             $log_id = \DB::table('balance_logs')->insertGetId([
                 'user_id' => $earn->user_id,
                 'start_balance' => $user->balance,
                 'start_pending_balance' => $user->pending_balance,
-                'amount' => (double)$earn->amount,
-                'description' => 'Admin approve withdraw request '.$earn->id,
+                'amount' => (float)$earn->amount,
+                'description' => 'Admin approve withdraw request ' . $earn->id,
             ]);
-            User::where('id', $earn->user_id)->decrement('frozen', (double)$earn->amount);
+            User::where('id', $earn->user_id)->decrement('frozen', (float)$earn->amount);
 
             $user = User::where('id', $earn->user_id)->first();
             $log  = \DB::table('balance_logs')->whereId($log_id)->update([
@@ -120,7 +138,7 @@ class WithdrawlController extends Controller
                 'to_pending_balance' => $user->pending_balance,
             ]);
         }
-            
+
         return $this->responseOK(['message' => 'OK']);
     }
 
@@ -130,20 +148,19 @@ class WithdrawlController extends Controller
         $earn = Withdraw::where('id', $earn_id)->where('status', 1)->update(['status' => 3, 'description' => 'Reject: You did not hold the AZW token while the system was checking']);
         $earn = Withdraw::where('id', $earn_id)->first();
 
-        if($earn)
-        {
+        if ($earn) {
 
             $user = User::where('id', $earn->user_id)->first();
             $log_id = \DB::table('balance_logs')->insertGetId([
                 'user_id' => $earn->user_id,
                 'start_balance' => $user->balance,
                 'start_pending_balance' => $user->pending_balance,
-                'amount' => (double)$earn->amount,
-                'description' => 'Admin reject withdraw request '.$earn->id,
+                'amount' => (float)$earn->amount,
+                'description' => 'Admin reject withdraw request ' . $earn->id,
             ]);
 
-            User::where('id', $earn->user_id)->decrement('frozen', (double)$earn->amount);
-            
+            User::where('id', $earn->user_id)->decrement('frozen', (float)$earn->amount);
+
             $user = User::where('id', $earn->user_id)->first();
             $log  = \DB::table('balance_logs')->whereId($log_id)->update([
                 'to_balance' => $user->balance,
@@ -153,8 +170,5 @@ class WithdrawlController extends Controller
         }
 
         return $this->responseError('ERROR');
-            
-       
     }
-    
 }

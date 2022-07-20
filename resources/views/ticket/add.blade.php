@@ -10,31 +10,37 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <form action="" method="POST">
-                    @csrf
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="">Enter user id:</label>
-                            <input type="text" class="form-control" name="user_id" id="user_id"
-                                placeholder="User id" value="@php if(isset($_GET['user_id'])){echo $_GET['user_id'];} @endphp">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Enter title:</label>
-                            <input type="text" class="form-control" name="title" id="title" placeholder="Title">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Enter notification:</label>
-                            <br />
-                            <textarea class="form-control" name="notification" id="notification" cols="100%" rows="5"
-                                placeholder="Description"></textarea>
-                            {{-- <input type="text" class="form-control" name="description" id="description"
-                                placeholder="User id"> --}}
-                        </div>
-                        <div class="card-footer">
-                            <button type="" name="submit" id="submit" class="btn btn-primary">Submit</button>
-                        </div>
+                <div class="row">
+                    <div class="col-4">
+                        <form action="" method="POST">
+                            @csrf
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="">Enter user id:</label>
+                                    <input type="text" class="form-control" name="user_id" id="user_id" placeholder="User id" value="@php if(isset($_GET['user_id'])){echo $_GET['user_id'];} @endphp">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Enter title:</label>
+                                    <input type="text" class="form-control" name="title" id="title" placeholder="Title">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Enter notification:</label>
+                                    <br />
+                                    <textarea class="form-control" name="notification" id="notification" cols="100%" rows="5" placeholder="Description"></textarea>
+                                    {{-- <input type="text" class="form-control" name="description" id="description"
+                                        placeholder="User id"> --}}
+                                </div>
+                                <div class="card-footer">
+                                    <button type="" name="submit" id="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                    <div class="col-4">
+                        <p>Withdrawal will resolve in 2-3 weeks, please wait for my partner.</p>
+                        <p>Pending will resolve in 2-3 weeks, please wait for my partner.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

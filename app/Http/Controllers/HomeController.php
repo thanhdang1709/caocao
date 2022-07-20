@@ -33,7 +33,7 @@ class HomeController extends Controller
         $query = User::query();
         $user_search = $request->user_search;
         if ($user_search) {
-            $query->where('email', $user_search)->orWhere('address', $user_search);
+            $query->where('email', 'like', '%' . $user_search . '%')->orWhere('address', 'like', '%' . $user_search . '%');
         }
 
         $users = $query->where('is_ban', 0)->paginate(20);
