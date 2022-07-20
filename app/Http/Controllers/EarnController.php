@@ -272,7 +272,9 @@ class EarnController extends Controller
     public function reject_user(Request $request)
     {
        $user_id = $request->user_id;
-        $earns = Earn::where('user_id', $user_id)->whereDate('created_at',  date(env('DATE_APPROVE')))->where('status', 1)->get();
+        $from_date = date(env('DATE_APPROVE_FROM'));
+        $to_date = date(env('DATE_APPROVE_TO'));
+        $earns = Earn::where('user_id', $user_id)->whereDateBetween('created_at', $from_date, $to_date)->where('status', 1)->get();
         $list_id = [];
         if($earns) {
             foreach($earns as $earn) {
