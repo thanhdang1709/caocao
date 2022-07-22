@@ -291,6 +291,25 @@ return [
                 ],
             ],
         ],
+        [
+            'text' => 'Post',
+            'icon' => 'fas fa-flag',
+            'submenu' => [
+                [
+                    'text' => 'List',
+                    'url' => 'post/list',
+                ],
+                [
+                    'text' => 'Add',
+                    'url' => 'post/create',
+                ],
+            ],
+        ],
+        [
+            'text' => 'System',
+            'icon' => 'fas fa-hammer',
+            'url' => 'system',
+        ],
         // [
         //     'text' => 'Logout',
         //     'url'  => 'logout',

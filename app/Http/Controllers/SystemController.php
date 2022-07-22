@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Currency;
+use App\Models\System;
+
 class SystemController extends Controller
-{   
+{
 
 
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware(['api_throttle:10,1']);
     }
     /**
@@ -28,7 +31,7 @@ class SystemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function app_version()
-    {   
+    {
         $data = [
             'version' => env('APP_VERSION'),
             'home_banner' => 'https://cdn.azworld.network/icon.gif',
@@ -38,45 +41,45 @@ class SystemController extends Controller
             'min_vip' => env('AMOUNT_TOKEN_IS_VIP') . '+',
             'page_ref_text' => 'Send a referral link to your friend\nIf the people you refer go shopping - You will get up to 20% Cashback commission  in  that order\nMax 5 users / day',
             'page_ref_how_it_work' => 'A referral program is a system that incentivizes previous customers to recommend your products to their family and friends. Retail stores create their own referral programs as a way to reach more people. It\'s a marketing strategy that asks previous happy, loyal customers to become brand advocates',
-            'page_wheel_text' => 'You will get lucky spin after 36 hours.\nThe total value of the payout pool is '.env('POOL').' AZW, which will decrease after each spin. When you spin how many USDT, we will send you the corresponding token according to the market price',
+            'page_wheel_text' => 'You will get lucky spin after 36 hours.\nThe total value of the payout pool is ' . env('POOL') . ' AZW, which will decrease after each spin. When you spin how many USDT, we will send you the corresponding token according to the market price',
             'home_no_data_earning_today' => 'You have not earned AZW token today, or quickly get rewarded by referring friends or using lucky wheel, earn money by reading news, watching ads',
             'page_withdraw' => 'You can withdraw point to AZW token. \nIf you don\'t have a wallet, create and add AZW tokens to your account. \nConversation: 1 AZW offchain = 1 AZW onchain.\nYou must keep AZW tokens in your wallet continuously for 7 days until the withdrawal from the app is approved. We will refuse to withdraw funds if we detect fraud.',
             'amount_bet_dice' => env('AMOUNT_BET_DICE'),
             'page_offer' => 'When you do the task you will be paid AZW tokens, up to 10,000 AWZ. 5 Point in task = 1 AZW',
             'min_withdraw' => (int)env('MIN_WITHDRAW') ?? 1000,
             'earn_status' => [
-                [   
+                [
                     'value' => 1,
                     'label' => 'Processing',
                     'color' => '#ffe58f'
                 ],
-                [   
+                [
                     'value' => 2,
                     'label' => 'Available',
                     'color' => '#52c41a'
                 ],
-                [   
+                [
                     'value' => 3,
                     'label' => 'Cancel',
                     'color' => '#ffe58f'
                 ],
-                [   
+                [
                     'value' => 4,
                     'label' => 'Withdrawn',
                     'color' => '#ffe58f'
                 ],
-                [   
+                [
                     'value' => 5,
                     'label' => 'Withdrawing',
                     'color' => '#ffe58f'
                 ],
-                [   
+                [
                     'value' => 6,
                     'label' => 'Freeze',
                     'color' => '#ffe58f'
                 ],
             ],
-            
+
         ];
 
         return $this->responseOK($data, 'success');
@@ -117,16 +120,13 @@ class SystemController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function currency()
-    {   
+    {
         $currencies = Currency::where('status', 1)->get();
-       
-        if($currencies) {
+
+        if ($currencies) {
             return $this->responseOK(['items' => $currencies], 'success');
-        } 
+        }
         return $this->responseError();
-
-
-        
     }
 
     /**
@@ -161,5 +161,20 @@ class SystemController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function system()
+    {
+        $systems = System::get();
+        return view('system', compact('systems'));
+    }
+    public function system_update(Request $request)
+    {
+
+        $array = ($request->except(['_token']));
+        foreach ($array as $key => $item) {
+            System::where('key', $key)->update(['value' => $item]);
+        }
+        return redirect()->route('system');
     }
 }
