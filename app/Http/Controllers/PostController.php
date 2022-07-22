@@ -315,6 +315,7 @@ class PostController extends Controller
     }
 
     public function deletePost($id){
+        PostTagRelationship::where('post_id', $id)->delete();
         $delete = Post::where('id', $id)->delete();
         return $this->responseOK([]); 
     }
