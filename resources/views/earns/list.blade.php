@@ -68,7 +68,8 @@
                                     @if ($earn->user)
                                         <td>{{ $earn->user->email }}</td>
                                         <td style="width: 300px">
-                                            <button user_id="{{ $earn->user_id }}" class="btn btn-success mr-2 confirm-user">Approve user</button> <button user_id="{{ $earn->user_id }}" class="btn btn-danger mr-2 reject-user">Reject user</button>
+                                            <button user_id="{{ $earn->user_id }}" class="btn btn-success mr-2 confirm-user {{ $first_user->id == $earn->id ? 'approve_first_line' : null }}">Approve user</button>
+                                            <button user_id="{{ $earn->user_id }}" class="btn btn-danger mr-2 reject-user {{ $first_user->id == $earn->id ? 'reject_first_line' : null }}">Reject user</button>
                                         </td>
                                         <td style="width: 400px"> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $earn->user->address }}" target="_blank"> {{ $earn->user->address }}</a></td>
                                     @endif
@@ -118,6 +119,19 @@
             //     var start = start.format('YYYY-MM-DD');
             //     var end = end.format('YYYY-MM-DD');
 
+            // });
+
+            // $(document).keyup(function(e) {
+            //     // alert(e.keyCode);
+            //     if (e.keyCode == 97) {
+            //         alert(123);
+            //         // $('.approve_first_line').on('click', function() {
+
+            //         // })
+            //     }
+            // });
+            // $('.reject_first_line').on('click', function() {
+            //     alert('asfasdf');
             // });
 
             $('.searchbtn').click(function() {

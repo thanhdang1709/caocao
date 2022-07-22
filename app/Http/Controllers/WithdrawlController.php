@@ -108,7 +108,6 @@ class WithdrawlController extends Controller
 
         // return view('user.list', compact('users'));
 
-        // $earns = $ qu
 
         $earns = $queryEarn->paginate(200);
 

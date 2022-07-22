@@ -6,6 +6,8 @@ use App\Http\Controllers\CaptchaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EarnController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\SystemController;
 use App\Http\Controllers\WithdrawlController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
@@ -41,6 +43,14 @@ Route::get('/permission', function () {
 
 Route::get('/tracking', function () {
     return  redirect('https://amazon.com');;
+});
+
+
+Route::group([
+    'middleware' => ['auth', 'is_admin'],
+    'prefix' => '/'
+
+], function ($router) {
 });
 
 
@@ -91,6 +101,43 @@ Route::group([
     Route::get('/banned', [HomeController::class, 'getBannedUser']);
 });
 
+Route::group([
+    'middleware' => ['auth', 'is_admin'],
+    'prefix' => 'post', 'as' => 'post.'
+
+], function ($router) {
+    //POST
+    Route::get('/create', function () {
+        return view('post.post');
+    });
+    Route::post('/create', [PostController::class, 'store'])->name('create');
+
+    Route::get('/list', [PostController::class, 'getList']);
+});
+
+
+Route::get('/payments/offers/tapjoy', [OfferController::class, 'offer_tapjoy']);
+
+
+//SYSTEM
+Route::get('/system', [SystemController::class, 'system'])->name('system');
+Route::post('/system', [SystemController::class, 'system_update']);
+
+
+
+//HOME
+Route::get('/home', function () {
+    return view('home');
+})->name('home')->middleware(['auth', 'is_admin']);
+
+// Auth::routes();
+Auth::routes(['logout' => false]);
+
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 
 // Route::get('/reset_task', function () {
 //     \DB::table('user_ptc_task')->truncate();
@@ -101,18 +148,3 @@ Route::group([
 //     \DB::table('token_requests')->truncate();
 //     echo 'ok!!';
 // });
-
-Route::get('/payments/offers/tapjoy', [OfferController::class, 'offer_tapjoy']);
-
-
-// Auth::routes();
-
-Route::get('/home', function () {
-    return view('home');
-})->name('home')->middleware(['auth', 'is_admin']);
-
-// Auth::routes();
-Auth::routes(['logout' => false]);
-
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

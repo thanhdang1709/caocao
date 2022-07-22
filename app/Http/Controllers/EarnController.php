@@ -115,8 +115,10 @@ class EarnController extends Controller
 
         $earns = $queryEarn->WhereIn('subject', $subjects)->paginate(20);
 
+        $first_user = $queryEarn->first();
 
-        return view('earns.list', compact(['earns','totalEarns']));
+
+        return view('earns.list', compact(['earns','totalEarns', 'first_user']));
     }
 
     public function approve_task(Request $request)

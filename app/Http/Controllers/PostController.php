@@ -15,7 +15,7 @@ class PostController extends Controller
     private $user;
     public function __construct()
     {   
-        $this->middleware(['check_token']);
+        $this->middleware(['auth']);
         $this->user = auth()->user();
     }
 
@@ -153,7 +153,7 @@ class PostController extends Controller
         $now = \Carbon\Carbon::now();
         $now_format = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
         $rand = rand(1000, 9999);
-        $user_id = $this->user->id;
+        $user_id = auth()->user()->id;
         if(($request->file("image"))!=null)
         {
             $photo = $request->file("image");
@@ -224,9 +224,9 @@ class PostController extends Controller
         $data = [];
         $data['item'] = $post;
         if($post) {
-            return $this->responseOK($data, 'success');
+            return redirect()->back()->with('success', 'Create post success!');
         } else {
-            return $this->responseError();
+            return view('post.post')->with('error', 'Create post fall!');
         }
     }
 
@@ -306,5 +306,11 @@ class PostController extends Controller
             return $this->responseError();
          }
 
+    }
+
+
+    public function getList(){
+        $posts = Post::paginate(20);
+        return view('post.list', compact('posts'));
     }
 }
