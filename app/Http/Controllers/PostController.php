@@ -310,7 +310,13 @@ class PostController extends Controller
 
 
     public function getList(){
-        $posts = Post::paginate(20);
+        $posts = Post::orderBy('created_at', 'DESC')->paginate(20);
         return view('post.list', compact('posts'));
+    }
+
+    public function deletePost($id){
+        PostTagRelationship::where('post_id', $id)->delete();
+        $delete = Post::where('id', $id)->delete();
+        return $this->responseOK([]); 
     }
 }

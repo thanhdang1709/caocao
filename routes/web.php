@@ -113,6 +113,7 @@ Route::group([
     Route::post('/create', [PostController::class, 'store'])->name('create');
 
     Route::get('/list', [PostController::class, 'getList']);
+    Route::get('/delete/{id}', [PostController::class, 'deletePost']);
 });
 
 
