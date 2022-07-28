@@ -111,7 +111,7 @@ class EarnController extends Controller
 
         //Fetch list of results
 
-        $totalEarns =  $queryEarn->where('status', 1)->sum('reward');
+        $totalEarns =  $queryEarn->sum('reward');
 
         $earns = $queryEarn->WhereIn('subject', $subjects)->paginate(20);
 
