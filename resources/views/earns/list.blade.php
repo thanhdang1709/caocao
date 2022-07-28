@@ -68,10 +68,10 @@
                                     @if ($earn->user)
                                         <td>{{ $earn->user->email }}</td>
                                         <td style="width: 300px">
-                                            <button user_id="{{ $earn->user_id }}" class="btn btn-success mr-2 confirm-user {{ $first_user->id == $earn->id ? 'approve_first_line' : null }}">Approve user</button>
-                                            <button user_id="{{ $earn->user_id }}" class="btn btn-danger mr-2 reject-user {{ $first_user->id == $earn->id ? 'reject_first_line' : null }}">Reject user</button>
+                                            <button user_id="{{ $earn->user_id }}" class="btn btn-success mr-2 confirm-user">Approve user</button>
+                                            <button user_id="{{ $earn->user_id }}" class="btn btn-danger mr-2 reject-user">Reject user</button>
                                         </td>
-                                        <td style="width: 400px"> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $earn->user->address }}" target="_blank"> {{ $earn->user->address }}</a></td>
+                                        <td style="width: 400px"> <a href="https://bscscan.com/token/0x1f2cfde19976a2bf0a250900f7ace9c362908c93?a={{ $earn->user->address }}" target="_blank" class="address"> {{ $earn->user->address }}</a></td>
                                     @endif
                                     <td class="text-red text-bold">{{ number_format($earn->reward) }}</td>
                                     <td>{{ $earn->status }}</td>
@@ -111,28 +111,26 @@
                 }
             });
 
-            // $('input[name="daterange"]').daterangepicker({
-            //     opens: 'left'
-            // }, function(start, end, label) {
-            //     console.log("A new date selection was made: " + start.format('YYYY-MM-DD') +
-            //         ' to ' + end.format('YYYY-MM-DD'));
-            //     var start = start.format('YYYY-MM-DD');
-            //     var end = end.format('YYYY-MM-DD');
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left'
+            }, function(start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') +
+                    ' to ' + end.format('YYYY-MM-DD'));
+                var start = start.format('YYYY-MM-DD');
+                var end = end.format('YYYY-MM-DD');
 
-            // });
+            });
 
-            // $(document).keyup(function(e) {
-            //     // alert(e.keyCode);
-            //     if (e.keyCode == 97) {
-            //         alert(123);
-            //         // $('.approve_first_line').on('click', function() {
-
-            //         // })
-            //     }
-            // });
-            // $('.reject_first_line').on('click', function() {
-            //     alert('asfasdf');
-            // });
+            $(document).keyup(function(e) {
+                // alert(e.keyCode);
+                if (e.keyCode == 97) {
+                    document.getElementsByClassName('confirm-user')[0].click();
+                } else if (e.keyCode == 98) {
+                    document.getElementsByClassName('reject-user')[0].click();
+                } else if (e.keyCode == 99) {
+                    document.getElementsByClassName('address')[0].click();
+                }
+            });
 
             $('.searchbtn').click(function() {
                 var user_id = $('.user_id').val();

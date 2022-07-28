@@ -226,7 +226,7 @@ class PostController extends Controller
         if($post) {
             return redirect()->back()->with('success', 'Create post success!');
         } else {
-            return view('post.post')->with('error', 'Create post fall!');
+            return redirect()->back()->with('error', 'Create post fall!');
         }
     }
 
